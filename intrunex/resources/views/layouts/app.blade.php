@@ -1,80 +1,44 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{{ config('app.name', 'IntruNex') }}</title>
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    {{-- Google Font: Orbitron for cyber look --}}
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
+    @vite('resources/css/app.css')
 
-    <!-- Fonts -->
-    <link rel="dns-prefetch" href="//fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
-
-    <!-- Scripts -->
-    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+    <style>
+        body {
+            font-family: 'Orbitron', sans-serif;
+        }
+        /* Subtle animated gradient background */
+        .bg-animated {
+            background: radial-gradient(circle at center, #00ff00 0%, #000 70%);
+            background-size: 200% 200%;
+            animation: pulseBg 8s ease-in-out infinite;
+        }
+        @keyframes pulseBg {
+            0% { background-position: 50% 50%; }
+            50% { background-position: 55% 45%; }
+            100% { background-position: 50% 50%; }
+        }
+    </style>
 </head>
-<body>
-    <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-            <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name', 'Laravel') }}
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+<body class="bg-black text-green-400 bg-animated min-h-screen flex flex-col">
 
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav me-auto">
-
-                    </ul>
-
-                    <!-- Right Side Of Navbar -->
-                    <ul class="navbar-nav ms-auto">
-                        <!-- Authentication Links -->
-                        @guest
-                            @if (Route::has('login'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                                </li>
-                            @endif
-
-                            @if (Route::has('register'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                                </li>
-                            @endif
-                        @else
-                            <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ Auth::user()->name }}
-                                </a>
-
-                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
-                                    </a>
-
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                        @csrf
-                                    </form>
-                                </div>
-                            </li>
-                        @endguest
-                    </ul>
-                </div>
-            </div>
-        </nav>
-
-        <main class="py-4">
+    {{-- Main content wrapper --}}
+    <main class="flex-1 flex items-center justify-center p-4">
+        <div class="w-full max-w-2xl text-center p-8 bg-black/70 border border-green-500 rounded-xl shadow-[0_0_25px_rgba(0,255,0,0.6)]">
             @yield('content')
-        </main>
-    </div>
+        </div>
+    </main>
+
+    {{-- Optional footer --}}
+    <footer class="text-center text-green-500 text-xs py-4 opacity-70">
+        &copy; {{ date('Y') }} IntruNex — Proactive Web Defense
+    </footer>
 </body>
 </html>

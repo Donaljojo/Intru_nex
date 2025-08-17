@@ -1,63 +1,97 @@
-{{-- resources/views/auth/login.blade.php --}}
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login — IntruNex</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-@section('content')
-<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-intrunex-dark via-black to-gray-900 p-6">
-    <div class="bg-white/90 backdrop-blur-md p-8 rounded-xl shadow-lg w-full max-w-md">
-        
-        {{-- Logo / Brand --}}
-        <div class="flex flex-col items-center mb-6">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-intrunex-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M12 4v16m8-8H4" />
-            </svg>
-            <h1 class="text-2xl font-bold text-intrunex-accent mt-2">IntruNex</h1>
-            <p class="text-gray-600 text-sm">Secure Your Web</p>
-        </div>
+    @vite(['resources/css/app.css','resources/js/app.js'])
 
-        {{-- Error message --}}
-        @if(session('error'))
-            <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-                {{ session('error') }}
-            </div>
-        @endif
-
-        {{-- Login Form --}}
+    <style>
+        :root{
+            --nx-green:#00ff88;
+            --nx-green-dim:#86ffc8;
+            --nx-bg:#000;
+        }
+        body{
+            font-family:'JetBrains Mono', monospace;
+            background:var(--nx-bg);
+            color:var(--nx-green-dim);
+        }
+        .form-container{
+            background:#0a0a0a;
+            border:1px solid rgba(0,255,136,.3);
+            border-radius:.75rem;
+            padding:2rem;
+            width:100%;
+            max-width:26rem;
+            margin:auto;
+        }
+        h1{
+            color:var(--nx-green);
+            text-align:center;
+            margin-bottom:1.5rem;
+            font-weight:700;
+            font-size:1.5rem;
+            text-shadow:0 0 8px rgba(0,255,136,.6);
+        }
+        label{
+            display:block;
+            margin-bottom:.35rem;
+            font-weight:600;
+            color:var(--nx-green);
+        }
+        input{
+            width:100%;
+            padding:.6rem .9rem;
+            border:1px solid rgba(0,255,136,.4);
+            border-radius:.5rem;
+            background:black;
+            color:var(--nx-green-dim);
+            outline:none;
+        }
+        input:focus{
+            border-color:var(--nx-green);
+            box-shadow:0 0 8px rgba(0,255,136,.4);
+        }
+        button{
+            background:var(--nx-green);
+            color:black;
+            font-weight:700;
+            padding:.6rem;
+            border-radius:.5rem;
+            width:100%;
+            transition:.2s ease;
+            margin-top:1rem;
+        }
+        button:hover{
+            background:#31ffa7;
+        }
+        .link{
+            display:block;
+            margin-top:1rem;
+            text-align:center;
+            color:var(--nx-green);
+            text-decoration:underline dotted;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-6">
+    <div class="form-container">
+        <h1>Login</h1>
         <form method="POST" action="{{ route('login') }}" class="space-y-5">
             @csrf
-
             <div>
-                <label for="email" class="block text-gray-700 text-sm font-medium mb-1">Email</label>
-                <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus
-                       class="w-full border-gray-300 rounded-lg focus:ring-intrunex-accent focus:border-intrunex-accent px-4 py-2">
+                <label>Email</label>
+                <input type="email" name="email" placeholder="you@example.com" required>
             </div>
-
             <div>
-                <label for="password" class="block text-gray-700 text-sm font-medium mb-1">Password</label>
-                <input id="password" type="password" name="password" required
-                       class="w-full border-gray-300 rounded-lg focus:ring-intrunex-accent focus:border-intrunex-accent px-4 py-2">
+                <label>Password</label>
+                <input type="password" name="password" required>
             </div>
-
-            <div class="flex items-center justify-between">
-                <label class="flex items-center text-sm text-gray-600">
-                    <input type="checkbox" name="remember" class="mr-2 rounded border-gray-300 text-intrunex-accent focus:ring-intrunex-accent">
-                    Remember me
-                </label>
-                <a href="{{ route('password.request') }}" class="text-sm text-intrunex-accent hover:underline">
-                    Forgot Password?
-                </a>
-            </div>
-
-            <button type="submit"
-                class="w-full bg-intrunex-accent hover:bg-intrunex-accent2 text-black font-semibold py-2 rounded-lg transition-colors duration-300">
-                Sign In
-            </button>
-
-            <p class="text-center text-sm text-gray-500">
-                Don’t have an account?
-                <a href="{{ route('register') }}" class="text-intrunex-accent hover:underline">Create one</a>
-            </p>
+            <button type="submit">Sign In</button>
         </form>
+        <a href="{{ route('register') }}" class="link">Need an account? Register</a>
     </div>
-</div>
-@endsection
+</body>
+</html>

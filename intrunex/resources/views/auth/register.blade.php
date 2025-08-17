@@ -1,57 +1,105 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register — IntruNex</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-@section('content')
-<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-intrunex-dark via-black to-gray-900 p-6">
-    <div class="bg-white/90 backdrop-blur-md p-8 rounded-xl shadow-lg w-full max-w-md">
+    @vite(['resources/css/app.css','resources/js/app.js'])
 
-        {{-- Logo --}}
-        <div class="flex flex-col items-center mb-6">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-intrunex-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M12 4v16m8-8H4" />
-            </svg>
-            <h1 class="text-2xl font-bold text-intrunex-accent mt-2">Create Your IntruNex Account</h1>
-            <p class="text-gray-600 text-sm">Secure your web presence</p>
-        </div>
-
+    <style>
+        :root{
+            --nx-green:#00ff88;
+            --nx-green-dim:#86ffc8;
+            --nx-bg:#000;
+        }
+        body{
+            font-family:'JetBrains Mono', monospace;
+            background:var(--nx-bg);
+            color:var(--nx-green-dim);
+        }
+        .form-container{
+            background:#0a0a0a;
+            border:1px solid rgba(0,255,136,.3);
+            border-radius:.75rem;
+            padding:2rem;
+            width:100%;
+            max-width:26rem;
+            margin:auto;
+        }
+        h1{
+            color:var(--nx-green);
+            text-align:center;
+            margin-bottom:1.5rem;
+            font-weight:700;
+            font-size:1.5rem;
+            text-shadow:0 0 8px rgba(0,255,136,.6);
+        }
+        label{
+            display:block;
+            margin-bottom:.35rem;
+            font-weight:600;
+            color:var(--nx-green);
+        }
+        input{
+            width:100%;
+            padding:.6rem .9rem;
+            border:1px solid rgba(0,255,136,.4);
+            border-radius:.5rem;
+            background:black;
+            color:var(--nx-green-dim);
+            outline:none;
+        }
+        input:focus{
+            border-color:var(--nx-green);
+            box-shadow:0 0 8px rgba(0,255,136,.4);
+        }
+        button{
+            background:var(--nx-green);
+            color:black;
+            font-weight:700;
+            padding:.6rem;
+            border-radius:.5rem;
+            width:100%;
+            transition:.2s ease;
+            margin-top:1rem;
+        }
+        button:hover{
+            background:#31ffa7;
+        }
+        .link{
+            display:block;
+            margin-top:1rem;
+            text-align:center;
+            color:var(--nx-green);
+            text-decoration:underline dotted;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-6">
+    <div class="form-container">
+        <h1>Register</h1>
         <form method="POST" action="{{ route('register') }}" class="space-y-5">
             @csrf
-
             <div>
-                <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                <input id="name" type="text" name="name" value="{{ old('name') }}" required
-                    class="w-full border-gray-300 rounded-lg focus:ring-intrunex-accent focus:border-intrunex-accent px-4 py-2">
+                <label>Name</label>
+                <input type="text" name="name" placeholder="Your name" required>
             </div>
-
             <div>
-                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                <input id="email" type="email" name="email" value="{{ old('email') }}" required
-                    class="w-full border-gray-300 rounded-lg focus:ring-intrunex-accent focus:border-intrunex-accent px-4 py-2">
+                <label>Email</label>
+                <input type="email" name="email" placeholder="you@example.com" required>
             </div>
-
             <div>
-                <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                <input id="password" type="password" name="password" required
-                    class="w-full border-gray-300 rounded-lg focus:ring-intrunex-accent focus:border-intrunex-accent px-4 py-2">
-                <small class="text-xs text-gray-500">Use at least 8 characters with numbers & symbols</small>
+                <label>Password</label>
+                <input type="password" name="password" required>
             </div>
-
             <div>
-                <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
-                <input id="password_confirmation" type="password" name="password_confirmation" required
-                    class="w-full border-gray-300 rounded-lg focus:ring-intrunex-accent focus:border-intrunex-accent px-4 py-2">
+                <label>Confirm Password</label>
+                <input type="password" name="password_confirmation" required>
             </div>
-
-            <button type="submit"
-                class="w-full bg-intrunex-accent hover:bg-intrunex-accent2 text-black font-semibold py-2 rounded-lg transition">
-                Create Account
-            </button>
-
-            <p class="text-center text-sm text-gray-500">
-                Already have an account?
-                <a href="{{ route('login') }}" class="text-intrunex-accent hover:underline">Sign in here</a>
-            </p>
+            <button type="submit">Sign Up</button>
         </form>
+        <a href="{{ route('login') }}" class="link">Already have an account? Login</a>
     </div>
-</div>
-@endsection
+</body>
+</html>
