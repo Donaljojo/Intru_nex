@@ -4,6 +4,13 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   server: {
+  hmr: {
+    host: 'your-codespace-name-8000.app.github.dev',
+    protocol: 'wss',
+  }
+},
+
+  server: {
     host: '0.0.0.0',
     port: 5173,
     strictPort: true

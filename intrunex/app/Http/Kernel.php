@@ -10,7 +10,8 @@ class Kernel extends HttpKernel
      * Global middleware stack.
      */
     protected $middleware = [
-        \App\Http\Middleware\EnforceProductionDomain::class,
+        //\App\Http\Middleware\EnforceProductionDomain::class,
+        'enforce.domain' => \App\Http\Middleware\EnforceProductionDomain::class,
     ];
 
     /**
