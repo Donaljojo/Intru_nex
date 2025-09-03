@@ -1,3 +1,9 @@
 controllers:
     resource: ../src/Controller/
     type: attribute
+dashboard:
+    path: /dashboard
+    controller: App\Modules\Dashboard\Controller\DashboardController::index
+user_registration:
+    path: /register
+    controller: App\Modules\UserManagement\Controller\RegistrationController::register
