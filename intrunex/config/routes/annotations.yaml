@@ -1,0 +1,11 @@
+controllers:
+    resource: ../../src/Controller/
+    type: annotation
+
+user_management_controllers:
+    resource: ../../src/Modules/UserManagement/Controller/
+    type: annotation
+
+dashboard_controllers:
+    resource: ../../src/Modules/Dashboard/Controller/
+    type: annotation

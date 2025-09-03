@@ -7,3 +7,12 @@ dashboard:
 user_registration:
     path: /register
     controller: App\Modules\UserManagement\Controller\RegistrationController::register
+admin_user_list:
+    path: /admin/users
+    controller: App\Modules\UserManagement\Controller\AdminUserController::list
+
+admin_user_edit:
+    path: /admin/users/{id}/edit
+    controller: App\Modules\UserManagement\Controller\AdminUserController::edit
+    requirements:
+        id: \d+
