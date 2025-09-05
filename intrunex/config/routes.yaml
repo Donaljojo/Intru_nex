@@ -1,6 +1,6 @@
 controllers:
     resource: ../src/Controller/
-    type: annotation
+    type: attribute
 dashboard:
     path: /dashboard
     controller: App\Modules\Dashboard\Controller\DashboardController::index

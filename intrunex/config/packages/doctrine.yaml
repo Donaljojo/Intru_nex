@@ -16,10 +16,11 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Entity'
                 prefix: 'App\Entity'
                 alias: App
+            
 
             AssetDiscovery:
                 is_bundle: false
-                type: annotation
+                type: attribute 
                 dir: '%kernel.project_dir%/src/Modules/AssetDiscovery/Entity'
                 prefix: 'App\Modules\AssetDiscovery\Entity'
                 alias: AssetDiscovery
