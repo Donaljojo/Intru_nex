@@ -1,26 +1,61 @@
-<table class="table">
-    <thead>
-        <tr>
-            <th>Email</th>
-            <th>Roles</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for user in users %}
+{% extends 'base.html.twig' %}
+
+{% block title %}User Management{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1 class="mb-4">User Management</h1>
+
+    <a href="{{ path('admin_user_create') }}" class="btn btn-success mb-3">
+        <i class="bi bi-plus-circle"></i> Create New User
+    </a>
+
+    {% for label, messages in app.flashes %}
+        <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+            {{ messages|join(', ') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+
+    <table class="table table-bordered table-hover align-middle">
+        <thead class="table-light">
             <tr>
-                <td>{{ user.email }}</td>
-                <td>{{ user.roles|join(', ') }}</td>
-                <td>
-                    <a href="{{ path('admin_user_edit', {id: user.id}) }}" class="btn btn-primary btn-sm">Edit Roles</a>
-                </td>
+                <th>Email</th>
+                <th>Roles</th>
+                <th style="width: 220px;">Actions</th>
             </tr>
-        {% else %}
-            <tr>
-                <td colspan="3">No users found.</td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                <tr>
+                    <td class="align-middle">{{ user.email }}</td>
+                    <td class="align-middle">{{ user.roles|join(', ') }}</td>
+                    <td>
+                        <a href="{{ path('admin_user_edit', {id: user.id}) }}" class="btn btn-primary btn-sm me-2">
+                            <i class="bi bi-pencil-fill"></i> Edit Roles
+                        </a>
+                        <form method="post" action="{{ path('admin_user_delete', {id: user.id}) }}" style="display:inline-block;" 
+                              onsubmit="return confirm('Are you sure you want to delete user {{ user.email }}?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete-user' ~ user.id) }}">
+                            <button class="btn btn-danger btn-sm" type="submit">
+                                <i class="bi bi-trash-fill"></i> Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="3" class="text-center">No users found.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+
+
+
+
 
 

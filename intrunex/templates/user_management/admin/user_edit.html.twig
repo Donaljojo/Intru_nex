@@ -1,33 +1,29 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}User Management{% endblock %}
+{% block title %}Edit User Roles{% endblock %}
 
 {% block body %}
-<h1>User Management</h1>
+<div class="container mt-4">
+    <h1 class="mb-4">Edit Roles for {{ user.email }}</h1>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Email</th>
-            <th>Roles</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for user in users %}
-            <tr>
-                <td>{{ user.email }}</td>
-                <td>{{ user.roles|join(', ') }}</td>
-                <td>
-                    <a href="{{ path('admin_user_edit', {id: user.id}) }}" class="btn btn-primary btn-sm">Edit Roles</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="3">No users found.</td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    {% for label, messages in app.flashes %}
+        <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+            {{ messages|join(', ') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
 
+    {{ form_start(editForm) }}
+        <div class="mb-3">
+            {{ form_widget(editForm.roles) }}
+            {{ form_errors(editForm.roles) }}
+        </div>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <a href="{{ path('admin_user_list') }}" class="btn btn-secondary ms-2">Back to User List</a>
+    {{ form_end(editForm) }}
+</div>
 {% endblock %}
+
+
+
+

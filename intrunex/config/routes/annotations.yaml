@@ -9,3 +9,6 @@ user_management_controllers:
 dashboard_controllers:
     resource: ../../src/Modules/Dashboard/Controller/
     type: annotation
+asset_discovery:
+  resource: '../../src/Modules/AssetDiscovery/Controller/'
+  type: annotation

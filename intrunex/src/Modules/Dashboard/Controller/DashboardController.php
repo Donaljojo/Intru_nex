@@ -13,7 +13,12 @@ class DashboardController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
-        return $this->render('dashboard/index.html.twig');
+        // Generate URL to asset list route
+        $assetListUrl = $this->generateUrl('asset_list');
+        //return $this->render('dashboard/index.html.twig');
+        return $this->render('dashboard/index.html.twig', [
+            'assetListUrl' => $assetListUrl,
+        ]);
     }
 }
 

@@ -1,6 +1,6 @@
 controllers:
     resource: ../src/Controller/
-    type: attribute
+    type: annotation
 dashboard:
     path: /dashboard
     controller: App\Modules\Dashboard\Controller\DashboardController::index
@@ -16,3 +16,30 @@ admin_user_edit:
     controller: App\Modules\UserManagement\Controller\AdminUserController::edit
     requirements:
         id: \d+
+admin_user_create:
+  path: /admin/users/create
+  controller: App\Modules\UserManagement\Controller\AdminUserController::create
+
+admin_user_delete:
+  path: /admin/users/{id}/delete
+  controller: App\Modules\UserManagement\Controller\AdminUserController::delete
+  methods: [POST]
+
+asset_list:
+    path: /assets/
+    controller: App\Modules\AssetDiscovery\Controller\AssetController::list
+
+asset_create:
+    path: /assets/create
+    controller: App\Modules\AssetDiscovery\Controller\AssetController::create
+
+asset_edit:
+    path: /assets/{id}/edit
+    controller: App\Modules\AssetDiscovery\Controller\AssetController::edit
+    requirements:
+        id: \d+
+
+asset_delete:
+    path: /assets/{id}/delete
+    controller: App\Modules\AssetDiscovery\Controller\AssetController::delete
+    methods: [POST]

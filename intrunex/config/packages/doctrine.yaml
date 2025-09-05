@@ -17,6 +17,13 @@ doctrine:
                 prefix: 'App\Entity'
                 alias: App
 
+            AssetDiscovery:
+                is_bundle: false
+                type: annotation
+                dir: '%kernel.project_dir%/src/Modules/AssetDiscovery/Entity'
+                prefix: 'App\Modules\AssetDiscovery\Entity'
+                alias: AssetDiscovery
+
 when@test:
     doctrine:
         dbal:
