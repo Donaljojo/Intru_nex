@@ -25,6 +25,14 @@ doctrine:
                 prefix: 'App\Modules\AssetDiscovery\Entity'
                 alias: AssetDiscovery
 
+            AssetVulnerability:
+                is_bundle: false
+                type: attribute
+                dir: '%kernel.project_dir%/src/Modules/AssetVulnerability/Entity'
+                prefix: 'App\Modules\AssetVulnerability\Entity'
+                alias: AssetVulnerability
+
+
 when@test:
     doctrine:
         dbal:

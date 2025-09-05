@@ -3,6 +3,7 @@
 namespace App\Modules\AssetDiscovery\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
 #[ORM\Table(name: "asset_discovery_asset")]
@@ -17,7 +18,8 @@ class Asset
     private string $name;
 
     #[ORM\Column(type: "string", length: 45, nullable: true)]
-    private ?string $ipAddress;
+    #[Assert\Ip]
+    private ?string $ipAddress = null;
 
     #[ORM\Column(type: "string", length: 50)]
     private string $type;
@@ -26,9 +28,7 @@ class Asset
     private string $status;
 
     #[ORM\Column(type: "text", nullable: true)]
-    private ?string $description;
-
-    // Getters and setters...
+    private ?string $description = null;
 
     public function getId(): ?int
     {
@@ -95,3 +95,5 @@ class Asset
         return $this;
     }
 }
+
+

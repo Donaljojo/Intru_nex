@@ -16,7 +16,7 @@ class AssetFormType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, ['label' => 'Asset Name'])
-            ->add('ipAddress', IpType::class, ['label' => 'IP Address', 'required' => false])
+            ->add('ipAddress', TextType::class, ['label' => 'IP Address', 'required' => false])
             ->add('type', ChoiceType::class, [
                 'choices' => [
                     'Server' => 'server',

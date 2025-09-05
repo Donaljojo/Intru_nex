@@ -3,6 +3,7 @@
 namespace App\Modules\AssetDiscovery\Controller;
 
 use App\Modules\AssetDiscovery\Entity\Asset;
+use App\Modules\AssetVulnerability\Entity\Vulnerability;
 use App\Modules\AssetDiscovery\Form\AssetFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -86,4 +87,17 @@ class AssetController extends AbstractController
 
         return $this->redirectToRoute('asset_list');
     }
+    // In AssetDiscovery\Controller\AssetController.php
+
+    #[Route('/assets/{id}', name: 'asset_detail', methods: ['GET'])]
+public function detail(Asset $asset, EntityManagerInterface $em): Response
+{
+    $vulnerabilities = $em->getRepository(Vulnerability::class)->findBy(['asset' => $asset]);
+
+    return $this->render('asset_discovery/asset/detail.html.twig', [
+        'asset' => $asset,
+        'vulnerabilities' => $vulnerabilities,
+    ]);
+}
+
 }

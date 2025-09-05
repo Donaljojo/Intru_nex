@@ -10,9 +10,27 @@
   {% else %}
     <p>You are not logged in.</p>
   {% endif %}
-  <a href="{{ path('asset_list') }}" class="btn btn-primary">
-    Manage Assets
-</a>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-header">Assets</div>
+            <div class="card-body">
+                <h5 class="card-title">{{ assetCount }}</h5>
+                <a href="{{ path('asset_list') }}" class="btn btn-light">View Assets</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card text-white bg-danger mb-3">
+            <div class="card-header">Vulnerabilities</div>
+            <div class="card-body">
+                <h5 class="card-title">{{ vulnerabilityCount }}</h5>
+                <a href="{{ path('vulnerability_list') }}" class="btn btn-light">View Vulnerabilities</a>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}
 

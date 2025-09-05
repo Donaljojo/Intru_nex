@@ -43,3 +43,19 @@ asset_delete:
     path: /assets/{id}/delete
     controller: App\Modules\AssetDiscovery\Controller\AssetController::delete
     methods: [POST]
+
+asset_detail:
+    path: /assets/{id}
+    controller: App\Modules\AssetDiscovery\Controller\AssetController::detail
+    methods: GET
+
+
+    # config/routes.yaml
+
+# Other route imports...
+
+asset_vulnerability:
+    resource: '../src/Modules/AssetVulnerability/Controller/'
+    type: annotation
+    prefix: /vulnerabilities
+
