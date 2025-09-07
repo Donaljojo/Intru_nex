@@ -26,6 +26,7 @@ services:
         resource: '../src/Modules/AssetVulnerability/*'
         tags: ['service']
 
-    App\Modules\AssetVulnerability\Service\NvdImportService:
+    
+    App\Modules\AssetVulnerability\Service\GithubAdvisoryImportService:
         arguments:
-           $apiKey: '%env(NVD_API_KEY)%'
+           $githubToken: '%env(GITHUB_API_TOKEN)%'
