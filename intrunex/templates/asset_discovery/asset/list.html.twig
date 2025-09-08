@@ -1,41 +1,37 @@
 {% extends 'base.html.twig' %}
-
 {% block title %}Asset List{% endblock %}
-
 {% block body %}
 <div class="container mt-4">
 <a href="{{ path('dashboard') }}" class="btn btn-secondary mb-3">
     <i class="bi bi-arrow-left"></i> Back to Dashboard
 </a>
     <h1 class="mb-4">Assets</h1>
-
     <a href="{{ path('asset_create') }}" class="btn btn-success mb-3">
         <i class="bi bi-plus-circle"></i> Add New Asset
     </a>
-
-
     {% for label, messages in app.flashes %}
         <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
             {{ messages|join(', ') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     {% endfor %}
-
     <table class="table table-bordered table-hover align-middle">
         <thead class="table-light">
             <tr>
+                <th>Asset ID</th>
                 <th>Name</th>
                 <th>IP Address</th>
                 <th>Type</th>
                 <th>Status</th>
                 <th>Description</th>
-                <th style="width: 220px;">Actions</th>
+                <th style="width: 280px;">Actions</th>
             </tr>
         </thead>
         <tbody>
             {% for asset in assets %}
                 <tr>
-                    <td>{{ asset.name }}</td>
+                    <td>{{ asset.id }}</td>
+                    <td><a href="{{ path('asset_detail', {id: asset.id}) }}">{{ asset.name }}</a></td>
                     <td>{{ asset.ipAddress ?? 'N/A' }}</td>
                     <td>{{ asset.type|capitalize }}</td>
                     <td>{{ asset.status|capitalize }}</td>
@@ -44,7 +40,6 @@
                         <a href="{{ path('asset_edit', {id: asset.id}) }}" class="btn btn-primary btn-sm me-2">
                             <i class="bi bi-pencil-fill"></i> Edit
                         </a>
-                        <td><a href="{{ path('asset_detail', {id: asset.id}) }}">{{ asset.name }}</a></td>
                         <form method="post" action="{{ path('asset_delete', {id: asset.id}) }}" style="display:inline-block;" 
                               onsubmit="return confirm('Are you sure you want to delete asset {{ asset.name }}?');">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete-asset' ~ asset.id) }}">
@@ -56,10 +51,13 @@
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="6" class="text-center">No assets found.</td>
+                    <td colspan="7" class="text-center">No assets found.</td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
 </div>
 {% endblock %}
+
+
+
