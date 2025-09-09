@@ -21,6 +21,12 @@ class Asset
     #[Assert\Ip]
     private ?string $ipAddress = null;
 
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private ?string $url = null;
+
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private ?string $domain = null;
+
     #[ORM\Column(type: "string", length: 50)]
     private string $type;
 
@@ -55,6 +61,30 @@ class Asset
     public function setIpAddress(?string $ipAddress): self
     {
         $this->ipAddress = $ipAddress;
+
+        return $this;
+    }
+
+    public function getUrl(): ?string
+    {
+        return $this->url;
+    }
+
+    public function setUrl(?string $url): self
+    {
+        $this->url = $url;
+
+        return $this;
+    }
+
+    public function getDomain(): ?string
+    {
+        return $this->domain;
+    }
+
+    public function setDomain(?string $domain): self
+    {
+        $this->domain = $domain;
 
         return $this;
     }
@@ -95,5 +125,6 @@ class Asset
         return $this;
     }
 }
+
 
 

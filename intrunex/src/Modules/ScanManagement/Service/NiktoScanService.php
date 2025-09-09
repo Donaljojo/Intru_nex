@@ -1,22 +1,22 @@
 <?php
-// src/Modules/ScanManagement/Service/NiktoScanService.php
 
 namespace App\Modules\ScanManagement\Service;
 
 use App\Modules\ScanManagement\Entity\ScanJob;
-use Doctrine\ORM\EntityManagerInterface;
 use App\Modules\AssetDiscovery\Entity\Asset;
+use App\Modules\AssetVulnerability\Entity\Vulnerability;
+use Doctrine\ORM\EntityManagerInterface;
 
 class NiktoScanService
 {
-    private $em;
+    private EntityManagerInterface $em;
 
     public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
     }
 
-    public function scanAsset(Asset $asset)
+    public function scanAsset(Asset $asset): ScanJob
     {
         $scanJob = new ScanJob();
         $scanJob->setAssetId($asset->getId());
@@ -25,29 +25,86 @@ class NiktoScanService
         $this->em->persist($scanJob);
         $this->em->flush();
 
-        // Build the Nikto command
-        $target = $asset->getIp(); // Or get URL, hostname
-        $outputFile = sys_get_temp_dir() . '/nikto_' . uniqid() . '.json';
+        // Select scan target dynamically: url > domain > ipAddress
+        if ($asset->getUrl()) {
+            $target = $asset->getUrl();
+        } elseif ($asset->getDomain()) {
+            $target = $asset->getDomain();
+        } elseif ($asset->getIpAddress()) {
+            $target = $asset->getIpAddress();
+        } else {
+            throw new \RuntimeException('No valid target (IP, URL, or domain) found for asset ID ' . $asset->getId());
+        }
+
+        $outputFile = sys_get_temp_dir() . '/nikto_' . uniqid() . '.txt';
+
         $command = sprintf(
-            'nikto -h %s -Format json -o %s',
+            'nikto -h %s -o %s',
             escapeshellarg($target),
             escapeshellarg($outputFile)
         );
 
-        // Execute Nikto
         $exitCode = null;
         exec($command, $output, $exitCode);
 
-        // Read and save the result
-        $result = file_exists($outputFile) ? file_get_contents($outputFile) : null;
+        $result = null;
+        if (file_exists($outputFile)) {
+            $result = file_get_contents($outputFile);
+        }
+
         $scanJob->setResult($result);
         $scanJob->setStatus($exitCode === 0 ? 'completed' : 'failed');
         $scanJob->setFinishedAt(new \DateTime());
         $this->em->flush();
 
-        // Clean up temp file
-        if ($result) unlink($outputFile);
+        if ($result) {
+            unlink($outputFile);
+        }
+
+        $this->parseScanResult($result, $asset);
 
         return $scanJob;
     }
+
+    private function parseScanResult(?string $reportText, Asset $asset): void
+    {
+        if (!$reportText) {
+            return;
+        }
+
+        preg_match_all('/(OSVDB-\d+|CVE-\d{4}-\d+)/', $reportText, $matches);
+        $vulnIds = array_unique($matches[0]);
+
+        if (empty($vulnIds)) {
+            return;
+        }
+
+        $vulnerabilityRepo = $this->em->getRepository(Vulnerability::class);
+
+        foreach ($vulnIds as $vulnId) {
+            $existing = $vulnerabilityRepo->findOneBy([
+                'asset' => $asset,
+                'cveId' => $vulnId,
+            ]);
+
+            if ($existing) {
+                continue;
+            }
+
+            $vulnerability = new Vulnerability();
+            $vulnerability->setAsset($asset);
+            $vulnerability->setCveId($vulnId);
+            $vulnerability->setDescription('Imported from Nikto scan');
+            $vulnerability->setSeverity('unknown');
+            $vulnerability->setDiscoveredAt(new \DateTime());
+            $vulnerability->setStatus('open');
+
+            $this->em->persist($vulnerability);
+        }
+
+        $this->em->flush();
+    }
 }
+
+
+

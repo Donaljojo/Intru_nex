@@ -5,7 +5,6 @@ namespace App\Modules\AssetDiscovery\Form;
 use App\Modules\AssetDiscovery\Entity\Asset;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\IpType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -17,6 +16,8 @@ class AssetFormType extends AbstractType
         $builder
             ->add('name', TextType::class, ['label' => 'Asset Name'])
             ->add('ipAddress', TextType::class, ['label' => 'IP Address', 'required' => false])
+            ->add('url', TextType::class, ['label' => 'URL', 'required' => false])
+            ->add('domain', TextType::class, ['label' => 'Domain', 'required' => false])
             ->add('type', ChoiceType::class, [
                 'choices' => [
                     'Server' => 'server',
@@ -48,3 +49,7 @@ class AssetFormType extends AbstractType
         ]);
     }
 }
+
+
+
+

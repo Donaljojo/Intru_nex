@@ -21,6 +21,8 @@
                 <th>Asset ID</th>
                 <th>Name</th>
                 <th>IP Address</th>
+                <th>URL</th>
+                <th>Domain</th>
                 <th>Type</th>
                 <th>Status</th>
                 <th>Description</th>
@@ -33,6 +35,8 @@
                     <td>{{ asset.id }}</td>
                     <td><a href="{{ path('asset_detail', {id: asset.id}) }}">{{ asset.name }}</a></td>
                     <td>{{ asset.ipAddress ?? 'N/A' }}</td>
+                    <td>{{ asset.url ?? 'N/A' }}</td>
+                    <td>{{ asset.domain ?? 'N/A' }}</td>
                     <td>{{ asset.type|capitalize }}</td>
                     <td>{{ asset.status|capitalize }}</td>
                     <td>{{ asset.description|default('')|length > 50 ? asset.description|slice(0, 50) ~ '...' : asset.description }}</td>
@@ -51,13 +55,14 @@
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="7" class="text-center">No assets found.</td>
+                    <td colspan="9" class="text-center">No assets found.</td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
 </div>
 {% endblock %}
+
 
 
 

@@ -1,51 +1,58 @@
 {% extends 'base.html.twig' %}
-
 {% block title %}Add New Asset{% endblock %}
-
 {% block body %}
 <div class="container mt-4">
     <h1 class="mb-4">Add New Asset</h1>
-
     {% for label, messages in app.flashes %}
         <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
             {{ messages|join(', ') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     {% endfor %}
-
     {{ form_start(form, {'attr': {'class': 'needs-validation'}, 'novalidate': 'novalidate'}) }}
         <div class="mb-3">
             {{ form_label(form.name, null, {'label_attr': {'class': 'form-label'}}) }}
             {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': 'Asset Name'}}) }}
             {{ form_errors(form.name) }}
         </div>
-
         <div class="mb-3">
             {{ form_label(form.ipAddress, null, {'label_attr': {'class': 'form-label'}}) }}
             {{ form_widget(form.ipAddress, {'attr': {'class': 'form-control', 'placeholder': 'IP Address'}}) }}
             {{ form_errors(form.ipAddress) }}
         </div>
-
+        <div class="mb-3">
+            {{ form_label(form.url, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.url, {'attr': {'class': 'form-control', 'placeholder': 'URL'}}) }}
+            {{ form_errors(form.url) }}
+        </div>
+        <div class="mb-3">
+            {{ form_label(form.domain, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.domain, {'attr': {'class': 'form-control', 'placeholder': 'Domain'}}) }}
+            {{ form_errors(form.domain) }}
+        </div>
         <div class="mb-3">
             {{ form_label(form.type, null, {'label_attr': {'class': 'form-label'}}) }}
             {{ form_widget(form.type, {'attr': {'class': 'form-select'}}) }}
             {{ form_errors(form.type) }}
         </div>
-
         <div class="mb-3">
             {{ form_label(form.status, null, {'label_attr': {'class': 'form-label'}}) }}
             {{ form_widget(form.status, {'attr': {'class': 'form-select'}}) }}
             {{ form_errors(form.status) }}
         </div>
-
         <div class="mb-3">
             {{ form_label(form.description, null, {'label_attr': {'class': 'form-label'}}) }}
             {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': 3, 'placeholder': 'Description (optional)'}}) }}
             {{ form_errors(form.description) }}
         </div>
-
         <button type="submit" class="btn btn-success">Add Asset</button>
         <a href="{{ path('asset_list') }}" class="btn btn-secondary ms-2">Cancel</a>
     {{ form_end(form) }}
 </div>
 {% endblock %}
+
+
+
+
+
+

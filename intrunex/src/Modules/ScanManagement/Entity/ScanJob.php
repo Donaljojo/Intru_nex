@@ -3,61 +3,52 @@
 namespace App\Modules\ScanManagement\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use App\Modules\AssetDiscovery\Entity\Asset;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
+#[ORM\Table(name: 'scan_management_scan_job')]
 class ScanJob
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $assetId;
+    #[ORM\ManyToOne(targetEntity: Asset::class)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    private Asset $asset;
 
-    /**
-     * @ORM\Column(type="string")
-     */
-    private $status; // e.g., pending, running, completed, failed
+    #[ORM\Column(type: 'string', length: 20)]
+    private string $status; // pending, running, completed, failed
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private $result;
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $startedAt = null;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private $startedAt;
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $completedAt = null;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    private $finishedAt;
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $errorMessage = null;
+
+    // Getters and Setters ...
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getAssetId(): ?int
+    public function getAsset(): Asset
     {
-        return $this->assetId;
+        return $this->asset;
     }
 
-    public function setAssetId(int $assetId): self
+    public function setAsset(Asset $asset): self
     {
-        $this->assetId = $assetId;
+        $this->asset = $asset;
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): string
     {
         return $this->status;
     }
@@ -68,39 +59,38 @@ class ScanJob
         return $this;
     }
 
-    public function getResult(): ?string
-    {
-        return $this->result;
-    }
-
-    public function setResult(?string $result): self
-    {
-        $this->result = $result;
-        return $this;
-    }
-
     public function getStartedAt(): ?\DateTimeInterface
     {
         return $this->startedAt;
     }
 
-    public function setStartedAt(\DateTimeInterface $startedAt): self
+    public function setStartedAt(?\DateTimeInterface $startedAt): self
     {
         $this->startedAt = $startedAt;
         return $this;
     }
 
-    public function getFinishedAt(): ?\DateTimeInterface
+    public function getCompletedAt(): ?\DateTimeInterface
     {
-        return $this->finishedAt;
+        return $this->completedAt;
     }
 
-    public function setFinishedAt(?\DateTimeInterface $finishedAt): self
+    public function setCompletedAt(?\DateTimeInterface $completedAt): self
     {
-        $this->finishedAt = $finishedAt;
+        $this->completedAt = $completedAt;
+        return $this;
+    }
+
+    public function getErrorMessage(): ?string
+    {
+        return $this->errorMessage;
+    }
+
+    public function setErrorMessage(?string $errorMessage): self
+    {
+        $this->errorMessage = $errorMessage;
         return $this;
     }
 }
-
 
 

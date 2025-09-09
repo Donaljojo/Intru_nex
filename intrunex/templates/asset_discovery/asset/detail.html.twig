@@ -1,22 +1,18 @@
 {% extends 'base.html.twig' %}
-
 {% block title %}Asset Details - {{ asset.name }}{% endblock %}
-
 {% block body %}
 <div class="container mt-4">
     <a href="{{ path('asset_list') }}" class="btn btn-secondary mb-3">
         <i class="bi bi-arrow-left"></i> Back to Asset List
     </a>
-
     <h1>Asset: {{ asset.name }}</h1>
-
     <p><strong>IP Address:</strong> {{ asset.ipAddress ?? 'N/A' }}</p>
+    <p><strong>URL:</strong> {{ asset.url ?? 'N/A' }}</p>
+    <p><strong>Domain:</strong> {{ asset.domain ?? 'N/A' }}</p>
     <p><strong>Type:</strong> {{ asset.type }}</p>
     <p><strong>Status:</strong> {{ asset.status }}</p>
     <p><strong>Description:</strong> {{ asset.description ?? 'No description' }}</p>
-
     <h2 class="mt-4">Vulnerabilities</h2>
-
     {% if vulnerabilities is empty %}
         <p>No vulnerabilities found for this asset.</p>
     {% else %}
@@ -56,3 +52,5 @@
     {% endif %}
 </div>
 {% endblock %}
+
+
