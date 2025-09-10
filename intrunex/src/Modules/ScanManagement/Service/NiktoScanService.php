@@ -19,7 +19,7 @@ class NiktoScanService
     public function scanAsset(Asset $asset): ScanJob
     {
         $scanJob = new ScanJob();
-        $scanJob->setAssetId($asset->getId());
+        $scanJob->setAsset($asset);
         $scanJob->setStatus('running');
         $scanJob->setStartedAt(new \DateTime());
         $this->em->persist($scanJob);
@@ -54,7 +54,7 @@ class NiktoScanService
 
         $scanJob->setResult($result);
         $scanJob->setStatus($exitCode === 0 ? 'completed' : 'failed');
-        $scanJob->setFinishedAt(new \DateTime());
+        $scanJob->setCompletedAt(new \DateTime());
         $this->em->flush();
 
         if ($result) {
