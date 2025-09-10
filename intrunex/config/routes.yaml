@@ -59,3 +59,7 @@ asset_vulnerability:
     type: annotation
     prefix: /vulnerabilities
 
+scan_management:
+    resource: '../src/Modules/ScanManagement/Controller/'
+    type: annotation
+    prefix: /scan-management

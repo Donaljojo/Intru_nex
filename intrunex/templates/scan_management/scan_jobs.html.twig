@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Recent Scan Jobs{% endblock %}
+
+{% block body %}
+<h1>Recent Scan Jobs</h1>
+<a href="{{ path('dashboard') }}" class="btn btn-secondary mb-3">
+    ← Back to Dashboard
+</a>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Asset</th>
+            <th>Status</th>
+            <th>Started At</th>
+            <th>Completed At</th>
+            <th>Error Message</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for scanJob in scanJobs %}
+        <tr>
+            <td>{{ scanJob.asset.name }}</td>
+            <td>{{ scanJob.status|capitalize }}</td>
+            <td>{{ scanJob.startedAt ? scanJob.startedAt|date('Y-m-d H:i:s') : 'N/A' }}</td>
+            <td>{{ scanJob.completedAt ? scanJob.completedAt|date('Y-m-d H:i:s') : 'N/A' }}</td>
+            <td>{{ scanJob.errorMessage ?: '-' }}</td>
+            <td>
+                <a href="{{ path('scan_progress', {'id': scanJob.id}) }}" class="btn btn-sm btn-primary">View Progress</a>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="6" class="text-center">No scan jobs found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

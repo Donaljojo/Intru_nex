@@ -1,0 +1,98 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Scan Progress - {{ scanJob.asset.name }}{% endblock %}
+
+{% block body %}
+<h1>Scan Progress for "{{ scanJob.asset.name }}"</h1>
+
+<!-- Back to Recent Scans button -->
+<a href="{{ path('scan_job_list') }}" class="btn btn-secondary mb-3">
+    ← Back to Recent Scans
+</a>
+
+<p>Status: <strong>{{ scanJob.status|capitalize }}</strong></p>
+
+{% if scanJob.startedAt %}
+<p>Started at: {{ scanJob.startedAt|date('Y-m-d H:i:s') }}</p>
+<p>Elapsed time: <span id="elapsed-time"></span></p>
+{% endif %}
+
+<div id="progress-message">
+    {% if scanJob.status == 'running' %}
+        <p>The scan is in progress. Please wait...</p>
+    {% elseif scanJob.status == 'completed' %}
+        <p>Scan completed successfully.</p>
+    {% elseif scanJob.status == 'failed' %}
+        <p>Scan failed: {{ scanJob.errorMessage }}</p>
+    {% elseif scanJob.status == 'cancelled' %}
+        <p>Scan was cancelled.</p>
+    {% else %}
+        <p>Scan status: {{ scanJob.status }}</p>
+    {% endif %}
+</div>
+
+<!-- Cancel Scan button (only if running) -->
+{% if scanJob.status == 'running' %}
+<button id="cancel-scan-btn" class="btn btn-warning mb-3">Cancel Scan</button>
+{% endif %}
+
+<!-- Delete Scan form (always shown) -->
+<form method="post" action="{{ path('scan_delete', {'id': scanJob.id}) }}" 
+      onsubmit="return confirm('Are you sure you want to delete this scan job?');" style="display:inline;">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete_scan' ~ scanJob.id) }}">
+    <button type="submit" class="btn btn-danger mb-3">Delete Scan</button>
+</form>
+
+<script>
+  const startedAt = new Date("{{ scanJob.startedAt ? scanJob.startedAt|date('c') : '' }}");
+  const elapsedElem = document.getElementById('elapsed-time');
+
+  if (startedAt && elapsedElem) {
+    function updateElapsed() {
+      const now = new Date();
+      let diff = Math.floor((now - startedAt) / 1000);
+      const minutes = Math.floor(diff / 60);
+      const seconds = diff % 60;
+      elapsedElem.textContent = minutes + 'm ' + seconds + 's';
+    }
+    updateElapsed();
+    setInterval(updateElapsed, 1000);
+  }
+
+  // Poll scan status every 5 seconds; reload if finished
+  {% if scanJob.status == 'running' %}
+  setInterval(() => {
+    fetch('{{ path('scan_progress_api', {'id': scanJob.id}) }}')
+      .then(response => response.json())
+      .then(data => {
+        if (data.status !== 'running') {
+          window.location.reload();
+        }
+      });
+  }, 5000);
+  {% endif %}
+
+  // Cancel scan button logic
+  document.getElementById('cancel-scan-btn')?.addEventListener('click', () => {
+    if (confirm('Are you sure you want to cancel the scan?')) {
+      fetch('{{ path('scan_cancel', {'id': scanJob.id}) }}', { 
+        method: 'POST', 
+        headers: { 
+          'X-Requested-With': 'XMLHttpRequest', 
+          'X-CSRF-TOKEN': '{{ csrf_token("cancel_scan" ~ scanJob.id) }}' 
+        }
+      }).then(res => {
+          if (res.ok) {
+            window.location.reload();
+          } else {
+            alert('Failed to cancel scan.');
+          }
+        });
+    }
+  });
+</script>
+
+{% endblock %}
+
+
+
