@@ -30,6 +30,9 @@ class ScanJob
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $errorMessage = null;
 
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $result = null;
+
     // Getters and Setters ...
 
     public function getId(): ?int
@@ -91,6 +94,18 @@ class ScanJob
         $this->errorMessage = $errorMessage;
         return $this;
     }
+
+    public function getResult(): ?string
+    {
+        return $this->result;
+    }
+
+    public function setResult(?string $result): self
+    {
+        $this->result = $result;
+        return $this;
+    }
 }
+
 
 

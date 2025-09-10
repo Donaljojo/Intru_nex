@@ -18,8 +18,25 @@ class NiktoScanService
 
     public function scanAsset(Asset $asset): ScanJob
     {
+        $repo = $this->em->getRepository(ScanJob::class);
+
+        // Find existing active jobs (pending, running) for this asset
+        $existingJobs = $repo->createQueryBuilder('j')
+            ->where('j.asset = :asset')
+            ->andWhere('j.status IN (:activeStatuses)')
+            ->setParameter('asset', $asset)
+            ->setParameter('activeStatuses', ['pending', 'running'])
+            ->getQuery()
+            ->getResult();
+
+        // Cancel existing active jobs
+        foreach ($existingJobs as $job) {
+            $job->setStatus('cancelled');
+        }
+        $this->em->flush();
+
+        // Create new scan job
         $scanJob = new ScanJob();
-        // Correct: assign the Asset entity not asset id
         $scanJob->setAsset($asset);
         $scanJob->setStatus('running');
         $scanJob->setStartedAt(new \DateTime());
@@ -55,7 +72,6 @@ class NiktoScanService
 
         $scanJob->setResult($result);
         $scanJob->setStatus($exitCode === 0 ? 'completed' : 'failed');
-        // Use setCompletedAt, matching your entity
         $scanJob->setCompletedAt(new \DateTime());
         $this->em->flush();
 
@@ -107,5 +123,6 @@ class NiktoScanService
         $this->em->flush();
     }
 }
+
 
 

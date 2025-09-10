@@ -22,7 +22,7 @@ class NiktoScanHandler implements MessageHandlerInterface
         $this->niktoScanService = $niktoScanService;
         $this->logger = $logger;
     }
-    public function __invoke(NiktoScanMessage $message)
+      public function __invoke(NiktoScanMessage $message)
 {
     $asset = $this->em->getRepository(Asset::class)->find($message->getAssetId());
     if (!$asset) {
@@ -30,26 +30,32 @@ class NiktoScanHandler implements MessageHandlerInterface
         return;
     }
 
-    $scanJob = new ScanJob();
-    $scanJob->setAsset($asset);
-    $scanJob->setStatus('running');
-    $scanJob->setStartedAt(new \DateTime());
-    $this->em->persist($scanJob);
-    $this->em->flush();
-
     try {
-        $this->niktoScanService->scanAsset($asset);
-        $scanJob->setStatus('completed');
+        // Use NiktoScanService which now handles de-duplication and job creation
+        $scanJob = $this->niktoScanService->scanAsset($asset);
+
+        // scanAsset already sets job status and completedAt, no need to modify here
     } catch (\Throwable $e) {
-        $scanJob->setStatus('failed');
-        $scanJob->setErrorMessage($e->getMessage());
+        // If scanAsset throws, try to find or create failure job record
+        $existingJob = $this->em->getRepository(ScanJob::class)->findOneBy([
+            'asset' => $asset,
+            'status' => ['pending', 'running']
+        ]);
+
+        if (!$existingJob) {
+            $existingJob = new ScanJob();
+            $existingJob->setAsset($asset);
+            $this->em->persist($existingJob);
+        }
+
+        $existingJob->setStatus('failed');
+        $existingJob->setErrorMessage($e->getMessage());
+        $existingJob->setCompletedAt(new \DateTime());
+        $this->em->flush();
+
         $this->logger->error('Scan failed: ' . $e->getMessage());
     }
-
-    $scanJob->setCompletedAt(new \DateTime());
-    $this->em->flush();
 }
 
-
-    
+  
 }
