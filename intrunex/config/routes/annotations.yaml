@@ -12,3 +12,7 @@ dashboard_controllers:
 asset_discovery:
   resource: '../../src/Modules/AssetDiscovery/Controller/'
   type: annotation
+
+landing_and_info:
+  resource: '../../src/Modules/LandingAndInfo/Controller'
+  type: annotation  

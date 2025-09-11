@@ -41,25 +41,21 @@ class AppCustomAuthenticator extends AbstractLoginFormAuthenticator
             ]
         );
     }
+
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
-{
-    return new RedirectResponse($this->urlGenerator->generate('dashboard'));
-}
- 
+    {
+        // Redirect to originally requested page if exists, else to dashboard
+        if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
+            return new RedirectResponse($targetPath);
+        }
 
-   // public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
-   // {
-   //     if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
-    //        return new RedirectResponse($targetPath);
-    //    }
-
-        // For example:
-        // return new RedirectResponse($this->urlGenerator->generate('some_route'));
-    //    throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
-   // }
+        return new RedirectResponse($this->urlGenerator->generate('dashboard'));
+    }
 
     protected function getLoginUrl(Request $request): string
     {
         return $this->urlGenerator->generate(self::LOGIN_ROUTE);
     }
 }
+
+

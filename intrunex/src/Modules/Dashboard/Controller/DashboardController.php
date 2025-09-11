@@ -80,6 +80,8 @@ class DashboardController extends AbstractController
 
         return $this->redirectToRoute('vulnerability_list');
     }
+   
+
 }
 
 

@@ -7,7 +7,14 @@
   {% else %}
     <p>You are not logged in.</p>
   {% endif %}
-  <a href="{{ path('app_logout') }}" class="btn btn-link">Logout</a>
+  <a href="{{ path('app_logout') }}"
+   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+   Logout
+</a>
+
+<form id="logout-form" action="{{ path('app_logout') }}" method="post" style="display: none;">
+    {{ csrf_token('logout')|raw }}
+</form>
 <div class="row mb-4">
     <div class="col-md-6">
         <div class="card text-white bg-primary mb-3">

@@ -3,9 +3,10 @@ controllers:
     type: attribute
     
 landing_and_info:
-  resource: '../../src/Modules/LandingAndInfo/Controller'
+  resource: '../src/Modules/LandingAndInfo/Controller'
   type: annotation
   prefix: /
+
 
 
 dashboard:
