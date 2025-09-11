@@ -19,7 +19,8 @@ class AssetController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
-        $assets = $em->getRepository(Asset::class)->findAll();
+        $user = $this->getUser();
+        $assets = $em->getRepository(Asset::class)->findBy(['user' => $user]);
 
         return $this->render('asset_discovery/asset/list.html.twig', [
             'assets' => $assets,
@@ -36,6 +37,7 @@ class AssetController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $asset->setUser($this->getUser()); // Assign ownership
             $em->persist($asset);
             $em->flush();
 
@@ -53,6 +55,11 @@ class AssetController extends AbstractController
     public function edit(Asset $asset, Request $request, EntityManagerInterface $em): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
+
+        // Check ownership
+        if ($asset->getUser() !== $this->getUser()) {
+            throw $this->createAccessDeniedException('You do not own this asset.');
+        }
 
         $form = $this->createForm(AssetFormType::class, $asset);
 
@@ -76,6 +83,11 @@ class AssetController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
+        // Check ownership
+        if ($asset->getUser() !== $this->getUser()) {
+            throw $this->createAccessDeniedException('You do not own this asset.');
+        }
+
         if ($this->isCsrfTokenValid('delete-asset'.$asset->getId(), $request->request->get('_token'))) {
             $em->remove($asset);
             $em->flush();
@@ -87,17 +99,23 @@ class AssetController extends AbstractController
 
         return $this->redirectToRoute('asset_list');
     }
-    // In AssetDiscovery\Controller\AssetController.php
 
-    #[Route('/assets/{id}', name: 'asset_detail', methods: ['GET'])]
-public function detail(Asset $asset, EntityManagerInterface $em): Response
-{
-    $vulnerabilities = $em->getRepository(Vulnerability::class)->findBy(['asset' => $asset]);
+    #[Route('/{id}', name: 'asset_detail', methods: ['GET'])]
+    public function detail(Asset $asset, EntityManagerInterface $em): Response
+    {
+        // Check ownership
+        if ($asset->getUser() !== $this->getUser()) {
+            throw $this->createAccessDeniedException('You do not own this asset.');
+        }
 
-    return $this->render('asset_discovery/asset/detail.html.twig', [
-        'asset' => $asset,
-        'vulnerabilities' => $vulnerabilities,
-    ]);
+        $vulnerabilities = $em->getRepository(Vulnerability::class)->findBy(['asset' => $asset]);
+
+        return $this->render('asset_discovery/asset/detail.html.twig', [
+            'asset' => $asset,
+            'vulnerabilities' => $vulnerabilities,
+        ]);
+    }
 }
 
-}
+
+

@@ -4,6 +4,7 @@ namespace App\Modules\AssetDiscovery\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Entity\User;
 
 #[ORM\Entity]
 #[ORM\Table(name: "asset_discovery_asset")]
@@ -13,6 +14,16 @@ class Asset
     #[ORM\GeneratedValue]
     #[ORM\Column(type: "integer")]
     private ?int $id = null;
+
+    //#[ORM\ManyToOne(targetEntity: User::class)]
+    //#[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
+    //private User $user;
+    
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
+    private User $user;
+
+
 
     #[ORM\Column(type: "string", length: 255)]
     private string $name;
@@ -36,6 +47,21 @@ class Asset
     #[ORM\Column(type: "text", nullable: true)]
     private ?string $description = null;
 
+    // User getter and setter
+
+    public function getUser(): User
+    {
+        return $this->user;
+    }
+
+    public function setUser(User $user): self
+    {
+        $this->user = $user;
+        return $this;
+    }
+
+    // Other Getters and Setters
+
     public function getId(): ?int
     {
         return $this->id;
@@ -49,7 +75,6 @@ class Asset
     public function setName(string $name): self
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -61,7 +86,6 @@ class Asset
     public function setIpAddress(?string $ipAddress): self
     {
         $this->ipAddress = $ipAddress;
-
         return $this;
     }
 
@@ -73,7 +97,6 @@ class Asset
     public function setUrl(?string $url): self
     {
         $this->url = $url;
-
         return $this;
     }
 
@@ -85,7 +108,6 @@ class Asset
     public function setDomain(?string $domain): self
     {
         $this->domain = $domain;
-
         return $this;
     }
 
@@ -97,7 +119,6 @@ class Asset
     public function setType(string $type): self
     {
         $this->type = $type;
-
         return $this;
     }
 
@@ -109,7 +130,6 @@ class Asset
     public function setStatus(string $status): self
     {
         $this->status = $status;
-
         return $this;
     }
 
@@ -121,7 +141,6 @@ class Asset
     public function setDescription(?string $description): self
     {
         $this->description = $description;
-
         return $this;
     }
 }

@@ -11,16 +11,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type:"integer")]
-    private ?int $id;
+    #[ORM\Column(type: "integer")]
+    private ?int $id = null;
 
-    #[ORM\Column(type:"string", unique:true)]
+    #[ORM\Column(type: "string", unique: true)]
     private string $email;
 
-    #[ORM\Column(type:"json")]
+    #[ORM\Column(type: "json")]
     private array $roles = [];
 
-    #[ORM\Column(type:"string")]
+    #[ORM\Column(type: "string")]
     private string $password;
 
     public function getId(): ?int
@@ -39,12 +39,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * Symfony uses getUserIdentifier() for login (>=5.3)
+     */
     public function getUserIdentifier(): string
     {
         return (string) $this->email;
     }
 
-    // Deprecated in Symfony 5.3+, but you can keep it for compatibility
+    /**
+     * Deprecated, but sometimes needed for BC.
+     */
     public function getUsername(): string
     {
         return (string) $this->email;
@@ -78,7 +83,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function eraseCredentials()
     {
-        // If you store any temporary sensitive data, clear it here
+        // Clear temporary, sensitive data if stored
     }
 }
+
 

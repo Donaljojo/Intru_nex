@@ -4,3 +4,4 @@ while true; do
   echo "Worker crashed with exit code $?. Respawning in 5 seconds..."
   sleep 5
 done
+export PATH="$HOME/.symfony5/bin:$PATH"

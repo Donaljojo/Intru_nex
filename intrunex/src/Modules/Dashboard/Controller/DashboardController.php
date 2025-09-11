@@ -20,16 +20,33 @@ class DashboardController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function index(EntityManagerInterface $em): Response
     {
-        // Count total assets and vulnerabilities
-        $assetCount = $em->getRepository(Asset::class)->count([]);
-        $vulnerabilityCount = $em->getRepository(Vulnerability::class)->count([]);
+        $user = $this->getUser();
 
-        // Fetch all assets for scan selection
-        $assets = $em->getRepository(Asset::class)->findAll();
+        // Count assets and vulnerabilities owned by current user
+        $assetCount = $em->getRepository(Asset::class)->count(['user' => $user]);
+        
+        // Count vulnerabilities through join on Asset with current user
+        $qbVulnCount = $em->createQueryBuilder()
+            ->select('COUNT(v.id)')
+            ->from(Vulnerability::class, 'v')
+            ->join('v.asset', 'a')
+            ->where('a.user = :user')
+            ->setParameter('user', $user);
+        $vulnerabilityCount = (int) $qbVulnCount->getQuery()->getSingleScalarResult();
 
-        // Fetch last 10 scan jobs ordered by most recent
-        $scanJobs = $em->getRepository(ScanJob::class)
-            ->findBy([], ['startedAt' => 'DESC'], 10);
+        // Assets owned by current user
+        $assets = $em->getRepository(Asset::class)->findBy(['user' => $user]);
+
+        // ScanJobs related to assets owned by current user
+        $qbScanJobs = $em->createQueryBuilder()
+            ->select('sj')
+            ->from(ScanJob::class, 'sj')
+            ->join('sj.asset', 'a')
+            ->where('a.user = :user')
+            ->setParameter('user', $user)
+            ->orderBy('sj.startedAt', 'DESC')
+            ->setMaxResults(10);
+        $scanJobs = $qbScanJobs->getQuery()->getResult();
 
         return $this->render('dashboard/index.html.twig', [
             'assetCount' => $assetCount,
@@ -43,6 +60,12 @@ class DashboardController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function scanAsset(Request $request, Asset $asset, MessageBusInterface $bus): Response
     {
+        // Check asset ownership before dispatching scan
+        if ($asset->getUser() !== $this->getUser()) {
+            $this->addFlash('error', 'You do not have permission to scan this asset.');
+            return $this->redirectToRoute('dashboard');
+        }
+
         if (!$this->isCsrfTokenValid('scan-asset' . $asset->getId(), $request->request->get('_token'))) {
             $this->addFlash('error', 'Invalid CSRF token.');
             return $this->redirectToRoute('dashboard');
@@ -58,6 +81,7 @@ class DashboardController extends AbstractController
         return $this->redirectToRoute('vulnerability_list');
     }
 }
+
 
 
 

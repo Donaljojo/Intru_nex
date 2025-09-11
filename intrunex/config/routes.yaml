@@ -1,6 +1,13 @@
 controllers:
     resource: ../src/Controller/
     type: attribute
+    
+landing_and_info:
+  resource: '../../src/Modules/LandingAndInfo/Controller'
+  type: annotation
+  prefix: /
+
+
 dashboard:
     path: /dashboard
     controller: App\Modules\Dashboard\Controller\DashboardController::index
