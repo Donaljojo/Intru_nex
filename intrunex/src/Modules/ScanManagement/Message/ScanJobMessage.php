@@ -2,7 +2,7 @@
 
 namespace App\Modules\ScanManagement\Message;
 
-class NiktoScanMessage
+class ScanJobMessage
 {
     private int $assetId;
 

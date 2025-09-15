@@ -30,3 +30,15 @@ services:
     App\Modules\AssetVulnerability\Service\GithubAdvisoryImportService:
         arguments:
            $githubToken: '%env(GITHUB_API_TOKEN)%'
+
+    # VulnerabilityDetection NiktoScanService
+    App\Modules\VulnerabilityDetection\Service\NiktoScanService: ~
+
+    # ScanManagement services
+    App\Modules\ScanManagement\Service\ScanJobService: ~
+
+    # Message Handler wiring
+    App\Modules\ScanManagement\MessageHandler\ScanJobHandler:
+        arguments:
+            $scanJobService: '@App\Modules\ScanManagement\Service\ScanJobService'
+            $niktoScanService: '@App\Modules\VulnerabilityDetection\Service\NiktoScanService'

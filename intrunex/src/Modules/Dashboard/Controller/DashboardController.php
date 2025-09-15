@@ -5,7 +5,7 @@ namespace App\Modules\Dashboard\Controller;
 use App\Modules\AssetDiscovery\Entity\Asset;
 use App\Modules\AssetVulnerability\Entity\Vulnerability;
 use App\Modules\ScanManagement\Entity\ScanJob;
-use App\Modules\ScanManagement\Message\NiktoScanMessage;
+use App\Modules\ScanManagement\Message\ScanJobMessage; // Use generic ScanJobMessage now
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,10 +22,10 @@ class DashboardController extends AbstractController
     {
         $user = $this->getUser();
 
-        // Count assets and vulnerabilities owned by current user
+        // Count assets owned by current user
         $assetCount = $em->getRepository(Asset::class)->count(['user' => $user]);
-        
-        // Count vulnerabilities through join on Asset with current user
+
+        // Count vulnerabilities related to user's assets
         $qbVulnCount = $em->createQueryBuilder()
             ->select('COUNT(v.id)')
             ->from(Vulnerability::class, 'v')
@@ -37,7 +37,7 @@ class DashboardController extends AbstractController
         // Assets owned by current user
         $assets = $em->getRepository(Asset::class)->findBy(['user' => $user]);
 
-        // ScanJobs related to assets owned by current user
+        // Recent scan jobs for user's assets
         $qbScanJobs = $em->createQueryBuilder()
             ->select('sj')
             ->from(ScanJob::class, 'sj')
@@ -60,30 +60,31 @@ class DashboardController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function scanAsset(Request $request, Asset $asset, MessageBusInterface $bus): Response
     {
-        // Check asset ownership before dispatching scan
+        // Verify ownership
         if ($asset->getUser() !== $this->getUser()) {
             $this->addFlash('error', 'You do not have permission to scan this asset.');
             return $this->redirectToRoute('dashboard');
         }
 
+        // Validate CSRF token
         if (!$this->isCsrfTokenValid('scan-asset' . $asset->getId(), $request->request->get('_token'))) {
             $this->addFlash('error', 'Invalid CSRF token.');
             return $this->redirectToRoute('dashboard');
         }
 
         try {
-            $bus->dispatch(new NiktoScanMessage($asset->getId()));
+            // Dispatch generic ScanJobMessage for decoupling
+            $bus->dispatch(new ScanJobMessage($asset->getId()));
+
             $this->addFlash('success', 'Scan job dispatched successfully for asset: ' . $asset->getName());
         } catch (\Exception $e) {
             $this->addFlash('error', 'Failed to dispatch scan: ' . $e->getMessage());
         }
 
-        return $this->redirectToRoute('vulnerability_list');
+        // Redirect to dashboard or vulnerability list based on UX preference
+        return $this->redirectToRoute('dashboard');
     }
-   
-
 }
-
 
 
 
