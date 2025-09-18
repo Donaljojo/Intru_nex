@@ -1,0 +1,23 @@
+{
+  "name": "IntruNex Dev Environment",
+  // Build using our custom Dockerfile
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  // Runs after container is created
+  "postCreateCommand": "composer install && php bin/console cache:clear",
+  // Recommended VS Code extensions
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "bmewburn.vscode-intelephense-client", // PHP IntelliSense
+        "esbenp.prettier-vscode",             // Prettier
+        "xdebug.php-debug"                    // Debugging
+      ]
+    }
+  },
+  // Mount your Codespaces secrets automatically
+  "remoteUser": "vscode",
+  // Optional: forward some ports to preview Symfony server
+  "forwardPorts": [8000]
+}
