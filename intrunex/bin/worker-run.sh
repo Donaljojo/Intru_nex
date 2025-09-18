@@ -5,3 +5,14 @@ while true; do
   sleep 5
 done
 export PATH="$HOME/.symfony5/bin:$PATH"
+
+
+echo 'export PATH="$HOME/.symfony5/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+sudo mv /home/codespace/.symfony5/bin/symfony /usr/local/bin/symfony
+RUN curl -sS https://get.symfony.com/cli/installer | bash && \
+     mv /root/.symfony5/bin/symfony /usr/local/bin/symfony
+
+echo 'export PATH=/usr/bin:$PATH' >> ~/.bashrc
+source ~/.bashrc
+php -v
