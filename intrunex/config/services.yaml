@@ -42,3 +42,6 @@ services:
         arguments:
             $scanJobService: '@App\Modules\ScanManagement\Service\ScanJobService'
             $niktoScanService: '@App\Modules\VulnerabilityDetection\Service\NiktoScanService'
+
+    # AssetDiscovery services
+    App\Modules\AssetDiscovery\Service\AssetProfilingService: ~

@@ -1,20 +1,23 @@
 controllers:
     resource: ../src/Controller/
     type: attribute
-    
+
+# Landing & Info module
 landing_and_info:
-  resource: '../src/Modules/LandingAndInfo/Controller'
-  type: annotation
-  prefix: /
+    resource: '../src/Modules/LandingAndInfo/Controller'
+    type: attribute
+    prefix: /
 
-
-
+# Dashboard (explicit because it’s a single endpoint)
 dashboard:
     path: /dashboard
     controller: App\Modules\Dashboard\Controller\DashboardController::index
+
+# User Management
 user_registration:
     path: /register
     controller: App\Modules\UserManagement\Controller\RegistrationController::register
+
 admin_user_list:
     path: /admin/users
     controller: App\Modules\UserManagement\Controller\AdminUserController::list
@@ -24,50 +27,32 @@ admin_user_edit:
     controller: App\Modules\UserManagement\Controller\AdminUserController::edit
     requirements:
         id: \d+
+
 admin_user_create:
-  path: /admin/users/create
-  controller: App\Modules\UserManagement\Controller\AdminUserController::create
+    path: /admin/users/create
+    controller: App\Modules\UserManagement\Controller\AdminUserController::create
 
 admin_user_delete:
-  path: /admin/users/{id}/delete
-  controller: App\Modules\UserManagement\Controller\AdminUserController::delete
-  methods: [POST]
-
-asset_list:
-    path: /assets/
-    controller: App\Modules\AssetDiscovery\Controller\AssetController::list
-
-asset_create:
-    path: /assets/create
-    controller: App\Modules\AssetDiscovery\Controller\AssetController::create
-
-asset_edit:
-    path: /assets/{id}/edit
-    controller: App\Modules\AssetDiscovery\Controller\AssetController::edit
-    requirements:
-        id: \d+
-
-asset_delete:
-    path: /assets/{id}/delete
-    controller: App\Modules\AssetDiscovery\Controller\AssetController::delete
+    path: /admin/users/{id}/delete
+    controller: App\Modules\UserManagement\Controller\AdminUserController::delete
     methods: [POST]
 
-asset_detail:
-    path: /assets/{id}
-    controller: App\Modules\AssetDiscovery\Controller\AssetController::detail
-    methods: GET
+# Asset Discovery module routes
+asset_discovery:
+    resource: '../src/Modules/AssetDiscovery/Controller'
+    type: attribute
+    prefix: /assets
 
-
-    # config/routes.yaml
-
-# Other route imports...
-
+# Asset Vulnerability module
 asset_vulnerability:
-    resource: '../src/Modules/AssetVulnerability/Controller/'
-    type: annotation
+    resource: '../src/Modules/AssetVulnerability/Controller'
+    type: attribute
     prefix: /vulnerabilities
 
+# Scan Management module
 scan_management:
-    resource: '../src/Modules/ScanManagement/Controller/'
-    type: annotation
+    resource: '../src/Modules/ScanManagement/Controller'
+    type: attribute
     prefix: /scan-management
+
+

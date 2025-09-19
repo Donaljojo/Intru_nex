@@ -45,14 +45,16 @@
             {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': 3, 'placeholder': 'Description (optional)'}}) }}
             {{ form_errors(form.description) }}
         </div>
+
+        <div class="alert alert-info">
+            <small><strong>Note:</strong> Operating System, Open Ports, and Profiling dates are determined automatically after profiling.</small>
+        </div>
+
         <button type="submit" class="btn btn-success">Add Asset</button>
         <a href="{{ path('asset_list') }}" class="btn btn-secondary ms-2">Cancel</a>
     {{ form_end(form) }}
 </div>
 {% endblock %}
-
-
-
 
 
 

@@ -12,6 +12,24 @@
     <p><strong>Type:</strong> {{ asset.type }}</p>
     <p><strong>Status:</strong> {{ asset.status }}</p>
     <p><strong>Description:</strong> {{ asset.description ?? 'No description' }}</p>
+
+    <h2 class="mt-4">Profiling Info</h2>
+    <ul>
+        <li><strong>Operating System:</strong> {{ asset.operatingSystem ?? 'Unknown' }}</li>
+        <li><strong>Open Ports:</strong> {{ asset.openPorts ? asset.openPorts|join(', ') : 'N/A' }}</li>
+        <li><strong>Last Profiled:</strong> {{ asset.lastProfiledAt ? asset.lastProfiledAt|date('Y-m-d H:i') : 'Never' }}</li>
+        <li><strong>Last Vulnerability Scan:</strong> {{ asset.lastVulnerabilityScanAt ? asset.lastVulnerabilityScanAt|date('Y-m-d H:i') : 'Never' }}</li>
+    </ul>
+
+    <div class="mt-3 mb-4">
+        <a href="{{ path('asset_profile', {id: asset.id}) }}" class="btn btn-info me-2">
+            <i class="bi bi-play-circle"></i> Profile Asset
+        </a>
+        <a href="{{ path('asset_vuln_scan', {id: asset.id}) }}" class="btn btn-warning">
+            <i class="bi bi-shield-exclamation"></i> Run Vulnerability Scan
+        </a>
+    </div>
+
     <h2 class="mt-4">Vulnerabilities</h2>
     {% if vulnerabilities is empty %}
         <p>No vulnerabilities found for this asset.</p>
@@ -52,5 +70,7 @@
     {% endif %}
 </div>
 {% endblock %}
+
+
 
 

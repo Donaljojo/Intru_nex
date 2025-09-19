@@ -15,15 +15,9 @@ class Asset
     #[ORM\Column(type: "integer")]
     private ?int $id = null;
 
-    //#[ORM\ManyToOne(targetEntity: User::class)]
-    //#[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
-    //private User $user;
-    
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     private User $user;
-
-
 
     #[ORM\Column(type: "string", length: 255)]
     private string $name;
@@ -47,8 +41,23 @@ class Asset
     #[ORM\Column(type: "text", nullable: true)]
     private ?string $description = null;
 
-    // User getter and setter
+    // 🔹 Phase 1 Profiling fields
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private ?string $operatingSystem = null;
 
+    #[ORM\Column(type: "json", nullable: true)]
+    private ?array $openPorts = null;
+
+    #[ORM\Column(type: "datetime_immutable", nullable: true)]
+    private ?\DateTimeImmutable $lastProfiledAt = null;
+
+    // 🔹 Phase 2 Vulnerability Scan fields
+    #[ORM\Column(type: "datetime_immutable", nullable: true)]
+    private ?\DateTimeImmutable $lastVulnerabilityScanAt = null;
+
+    // ---------------------------------
+    // User getter and setter
+    // ---------------------------------
     public function getUser(): User
     {
         return $this->user;
@@ -60,8 +69,9 @@ class Asset
         return $this;
     }
 
+    // ---------------------------------
     // Other Getters and Setters
-
+    // ---------------------------------
     public function getId(): ?int
     {
         return $this->id;
@@ -141,6 +151,56 @@ class Asset
     public function setDescription(?string $description): self
     {
         $this->description = $description;
+        return $this;
+    }
+
+    // ---------------------------------
+    // New fields for Profiling
+    // ---------------------------------
+    public function getOperatingSystem(): ?string
+    {
+        return $this->operatingSystem;
+    }
+
+    public function setOperatingSystem(?string $operatingSystem): self
+    {
+        $this->operatingSystem = $operatingSystem;
+        return $this;
+    }
+
+    public function getOpenPorts(): ?array
+    {
+        return $this->openPorts;
+    }
+
+    public function setOpenPorts(?array $openPorts): self
+    {
+        $this->openPorts = $openPorts;
+        return $this;
+    }
+
+    public function getLastProfiledAt(): ?\DateTimeImmutable
+    {
+        return $this->lastProfiledAt;
+    }
+
+    public function setLastProfiledAt(?\DateTimeImmutable $lastProfiledAt): self
+    {
+        $this->lastProfiledAt = $lastProfiledAt;
+        return $this;
+    }
+
+    // ---------------------------------
+    // New fields for Vulnerability Scan
+    // ---------------------------------
+    public function getLastVulnerabilityScanAt(): ?\DateTimeImmutable
+    {
+        return $this->lastVulnerabilityScanAt;
+    }
+
+    public function setLastVulnerabilityScanAt(?\DateTimeImmutable $lastVulnerabilityScanAt): self
+    {
+        $this->lastVulnerabilityScanAt = $lastVulnerabilityScanAt;
         return $this;
     }
 }
