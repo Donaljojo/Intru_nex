@@ -35,8 +35,8 @@
         <tbody>
             {% for asset in assets %}
                 <tr>
-                    <td>{{ asset.id }}</td>
-                    <td><a href="{{ path('asset_detail', {id: asset.id}) }}">{{ asset.name }}</a></td>
+                    <td>{{ asset.userAssetNumber }}</td>
+                    <td><a href="{{ path('asset_detail', {id: asset.userAssetNumber}) }}">{{ asset.name }}</a></td>
                     <td>{{ asset.ipAddress ?? 'N/A' }}</td>
                     <td>{{ asset.url ?? 'N/A' }}</td>
                     <td>{{ asset.domain ?? 'N/A' }}</td>

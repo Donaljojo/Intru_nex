@@ -14,6 +14,24 @@ class Asset
     #[ORM\GeneratedValue]
     #[ORM\Column(type: "integer")]
     private ?int $id = null;
+    // just under private ?int $id
+//#[ORM\Column(type: "integer")]
+//private int $userAssetNumber = 0;
+#[ORM\Column(type: "integer", nullable: true)]
+private ?int $userAssetNumber = null;
+
+
+public function getUserAssetNumber(): int
+{
+    return $this->userAssetNumber;
+}
+
+public function setUserAssetNumber(int $num): self
+{
+    $this->userAssetNumber = $num;
+    return $this;
+}
+
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]

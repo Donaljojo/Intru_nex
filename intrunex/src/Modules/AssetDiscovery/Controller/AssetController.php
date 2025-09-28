@@ -40,46 +40,52 @@ class AssetController extends AbstractController
         ]);
     }
 
-    #[Route('/create', name: 'asset_create')]
-    public function create(Request $request, EntityManagerInterface $em): Response
-    {
-        $this->denyAccessUnlessGranted('ROLE_USER');
+ #[Route('/create', name: 'asset_create')]
+public function create(
+    Request $request,
+    EntityManagerInterface $em,
+    \App\Modules\AssetDiscovery\Service\AssetProfilingService $assetProfilingService // inject profiling service
+): Response {
+    $this->denyAccessUnlessGranted('ROLE_USER');
 
-        $asset = new Asset();
-        $form = $this->createForm(AssetFormType::class, $asset);
+    $asset = new Asset();
+    $form = $this->createForm(AssetFormType::class, $asset);
 
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $asset->setUser($this->getUser()); // Assign ownership
-            $em->persist($asset);
-            $em->flush();
+    $form->handleRequest($request);
+    if ($form->isSubmitted() && $form->isValid()) {
+        $asset->setUser($this->getUser());
 
-            // 🔹 Phase 1 – Profiling
-            try {
-                $this->assetProfilingService->profile($asset);
-            } catch (\Exception $e) {
-                $this->addFlash('error', 'Asset created but profiling failed: '.$e->getMessage());
-            }
+        // 🔹 Assign next userAssetNumber
+        $qb = $em->createQueryBuilder();
+        $qb->select('MAX(a.userAssetNumber)')
+           ->from(Asset::class, 'a')
+           ->where('a.user = :user')
+           ->setParameter('user', $this->getUser());
+        $maxNum = (int)$qb->getQuery()->getSingleScalarResult();
+        $asset->setUserAssetNumber($maxNum + 1);
 
-            // 🔹 Optional Phase 2 – Vulnerability Scan
-            // Comment this out if you want to trigger manually later.
-            /*
-            try {
-                $this->vulnerabilityScanService->scan($asset);
-            } catch (\Exception $e) {
-                $this->addFlash('error', 'Asset created but vulnerability scan failed: '.$e->getMessage());
-            }
-            */
+        // Persist asset first so it has an ID
+        $em->persist($asset);
+        $em->flush();
 
+        // 🔹 Run Phase 1 – Profiling immediately
+        try {
+            $assetProfilingService->profile($asset);
             $this->addFlash('success', 'Asset created and profiling started.');
-
-            return $this->redirectToRoute('asset_list');
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'Asset created but profiling failed: '.$e->getMessage());
         }
 
-        return $this->render('asset_discovery/asset/create.html.twig', [
-            'form' => $form->createView(),
-        ]);
+        return $this->redirectToRoute('asset_list');
     }
+
+    return $this->render('asset_discovery/asset/create.html.twig', [
+        'form' => $form->createView(),
+    ]);
+}
+   
+   
+  
 
     #[Route('/{id}/edit', name: 'asset_edit')]
     public function edit(Asset $asset, Request $request, EntityManagerInterface $em): Response
@@ -108,27 +114,49 @@ class AssetController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/delete', name: 'asset_delete', methods: ['POST'])]
-    public function delete(Asset $asset, Request $request, EntityManagerInterface $em): Response
-    {
-        $this->denyAccessUnlessGranted('ROLE_USER');
+          #[Route('/{id}/delete', name: 'asset_delete', methods: ['POST'])]
+public function delete(
+    Asset $asset,
+    Request $request,
+    EntityManagerInterface $em
+): Response {
+    $this->denyAccessUnlessGranted('ROLE_USER');
 
-        // Check ownership
-        if ($asset->getUser() !== $this->getUser()) {
-            throw $this->createAccessDeniedException('You do not own this asset.');
-        }
-
-        if ($this->isCsrfTokenValid('delete-asset'.$asset->getId(), $request->request->get('_token'))) {
-            $em->remove($asset);
-            $em->flush();
-
-            $this->addFlash('success', 'Asset deleted successfully.');
-        } else {
-            $this->addFlash('error', 'Invalid CSRF token.');
-        }
-
-        return $this->redirectToRoute('asset_list');
+    // Check ownership
+    if ($asset->getUser() !== $this->getUser()) {
+        throw $this->createAccessDeniedException('You do not own this asset.');
     }
+
+    if ($this->isCsrfTokenValid('delete-asset'.$asset->getId(), $request->request->get('_token'))) {
+        $user = $asset->getUser();
+
+        // 🔹 Remove the asset
+        $em->remove($asset);
+        $em->flush();
+
+        // 🔹 Re-index userAssetNumber for this user
+        $assets = $em->getRepository(Asset::class)
+                     ->findBy(['user' => $user], ['userAssetNumber' => 'ASC']);
+
+        $i = 1;
+        foreach ($assets as $a) {
+            $a->setUserAssetNumber($i++);
+            $em->persist($a);
+        }
+        $em->flush();
+
+        $this->addFlash('success', 'Asset deleted and numbers reindexed successfully.');
+    } else {
+        $this->addFlash('error', 'Invalid CSRF token.');
+    }
+
+    return $this->redirectToRoute('asset_list');
+}
+
+
+
+
+   
 
     #[Route('/{id}', name: 'asset_detail', methods: ['GET'])]
     public function detail(Asset $asset, EntityManagerInterface $em): Response
