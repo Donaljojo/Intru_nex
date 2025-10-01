@@ -55,36 +55,4 @@ class DashboardController extends AbstractController
             'scanJobs' => $scanJobs,
         ]);
     }
-
-    #[Route('/dashboard/asset/{id}/scan', name: 'dashboard_asset_scan', methods: ['POST'])]
-    #[IsGranted('ROLE_USER')]
-    public function scanAsset(Request $request, Asset $asset, MessageBusInterface $bus): Response
-    {
-        // Verify ownership
-        if ($asset->getUser() !== $this->getUser()) {
-            $this->addFlash('error', 'You do not have permission to scan this asset.');
-            return $this->redirectToRoute('dashboard');
-        }
-
-        // Validate CSRF token
-        if (!$this->isCsrfTokenValid('scan-asset' . $asset->getId(), $request->request->get('_token'))) {
-            $this->addFlash('error', 'Invalid CSRF token.');
-            return $this->redirectToRoute('dashboard');
-        }
-
-        try {
-            // Dispatch generic ScanJobMessage for decoupling
-            $bus->dispatch(new ScanJobMessage($asset->getId()));
-
-            $this->addFlash('success', 'Scan job dispatched successfully for asset: ' . $asset->getName());
-        } catch (\Exception $e) {
-            $this->addFlash('error', 'Failed to dispatch scan: ' . $e->getMessage());
-        }
-
-        // Redirect to dashboard or vulnerability list based on UX preference
-        return $this->redirectToRoute('dashboard');
-    }
 }
-
-
-

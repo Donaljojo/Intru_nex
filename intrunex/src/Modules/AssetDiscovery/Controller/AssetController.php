@@ -8,6 +8,7 @@ use App\Modules\AssetDiscovery\Form\AssetFormType;
 use App\Modules\AssetDiscovery\Service\AssetProfilingService;
 use App\Modules\VulnerabilityDetection\Service\VulnerabilityScanService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -170,26 +171,24 @@ class AssetController extends AbstractController
     }
 
     #[Route('/vuln-scan/{id}', name: 'asset_vuln_scan', methods: ['POST'])]
-    public function vulnScan(Asset $asset, Request $request): Response
+    public function vulnScan(Asset $asset, Request $request, VulnerabilityScanService $vulnerabilityScanService, MessageBusInterface $bus): Response
     {
         if ($asset->getUser() !== $this->getUser()) {
             throw $this->createAccessDeniedException();
         }
 
         if ($this->isCsrfTokenValid('vuln-scan-asset'.$asset->getId(), $request->request->get('_token'))) {
-            // TODO: implement vuln scan
-            $this->addFlash('info', 'Vulnerability scan triggered.');
+            try {
+                $scanJob = $vulnerabilityScanService->scanAsset($asset);
+                $this->addFlash('success', 'Vulnerability scan started for asset: ' . $asset->getName());
+                return $this->redirectToRoute('vulnerability_scan_progress', ['id' => $scanJob->getId()]);
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'Failed to start vulnerability scan: ' . $e->getMessage());
+            }
         } else {
             $this->addFlash('error', 'Invalid CSRF token.');
         }
 
-        return $this->redirectToRoute('asset_detail', ['id' => $asset->getId()]);
+        return $this->redirectToRoute('dashboard');
     }
 }
-
-
-
-
-
-
-

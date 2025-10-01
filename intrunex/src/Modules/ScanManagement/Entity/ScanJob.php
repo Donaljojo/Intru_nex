@@ -2,110 +2,96 @@
 
 namespace App\Modules\ScanManagement\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use App\Modules\AssetDiscovery\Entity\Asset;
+use App\Modules\ScanManagement\Repository\ScanJobRepository;
+use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity]
-#[ORM\Table(name: 'scan_management_scan_job')]
+#[ORM\Entity(repositoryClass: ScanJobRepository::class)]
 class ScanJob
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: Asset::class)]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
-    private Asset $asset;
+    #[ORM\ManyToOne(inversedBy: 'scanJobs')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Asset $asset = null;
 
-    #[ORM\Column(type: 'string', length: 20)]
-    private string $status; // pending, running, completed, failed
+    #[ORM\Column(length: 255)]
+    private ?string $status = null;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
-    private ?\DateTimeInterface $startedAt = null;
+    #[ORM\Column]
+    private ?\DateTimeImmutable $startedAt = null;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
-    private ?\DateTimeInterface $completedAt = null;
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $finishedAt = null;
 
-    #[ORM\Column(type: 'text', nullable: true)]
-    private ?string $errorMessage = null;
-
-    #[ORM\Column(type: 'text', nullable: true)]
-    private ?string $result = null;
-
-    // Getters and Setters ...
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $scanner = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getAsset(): Asset
+    public function getAsset(): ?Asset
     {
         return $this->asset;
     }
 
-    public function setAsset(Asset $asset): self
+    public function setAsset(?Asset $asset): static
     {
         $this->asset = $asset;
+
         return $this;
     }
 
-    public function getStatus(): string
+    public function getStatus(): ?string
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): self
+    public function setStatus(string $status): static
     {
         $this->status = $status;
+
         return $this;
     }
 
-    public function getStartedAt(): ?\DateTimeInterface
+    public function getStartedAt(): ?\DateTimeImmutable
     {
         return $this->startedAt;
     }
 
-    public function setStartedAt(?\DateTimeInterface $startedAt): self
+    public function setStartedAt(\DateTimeImmutable $startedAt): static
     {
         $this->startedAt = $startedAt;
+
         return $this;
     }
 
-    public function getCompletedAt(): ?\DateTimeInterface
+    public function getFinishedAt(): ?\DateTimeImmutable
     {
-        return $this->completedAt;
+        return $this->finishedAt;
     }
 
-    public function setCompletedAt(?\DateTimeInterface $completedAt): self
+    public function setFinishedAt(?\DateTimeImmutable $finishedAt): static
     {
-        $this->completedAt = $completedAt;
+        $this->finishedAt = $finishedAt;
+
         return $this;
     }
 
-    public function getErrorMessage(): ?string
+    public function getScanner(): ?string
     {
-        return $this->errorMessage;
+        return $this->scanner;
     }
 
-    public function setErrorMessage(?string $errorMessage): self
+    public function setScanner(?string $scanner): static
     {
-        $this->errorMessage = $errorMessage;
-        return $this;
-    }
+        $this->scanner = $scanner;
 
-    public function getResult(): ?string
-    {
-        return $this->result;
-    }
-
-    public function setResult(?string $result): self
-    {
-        $this->result = $result;
         return $this;
     }
 }
-
-
-
