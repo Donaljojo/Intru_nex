@@ -16,3 +16,8 @@ RUN curl -sS https://get.symfony.com/cli/installer | bash && \
 echo 'export PATH=/usr/bin:$PATH' >> ~/.bashrc
 source ~/.bashrc
 php -v
+
+
+sudo apt-get update
+sudo apt-get install -y nmap
+nmap -v

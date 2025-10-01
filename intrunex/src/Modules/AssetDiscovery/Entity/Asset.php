@@ -193,8 +193,13 @@ public function setUserAssetNumber(int $num): self
 
     public function setOpenPorts(?array $openPorts): self
     {
-        $this->openPorts = $openPorts;
-        return $this;
+    // Ensure all ports are stored as strings
+        if ($openPorts !== null) {
+        $openPorts = array_map(fn($p) => (string) $p, $openPorts);
+    }
+
+    $this->openPorts = $openPorts;
+    return $this;
     }
 
     public function getLastProfiledAt(): ?\DateTimeImmutable

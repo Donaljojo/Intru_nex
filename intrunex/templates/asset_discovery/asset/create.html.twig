@@ -3,12 +3,14 @@
 {% block body %}
 <div class="container mt-4">
     <h1 class="mb-4">Add New Asset</h1>
+
     {% for label, messages in app.flashes %}
         <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
             {{ messages|join(', ') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     {% endfor %}
+
     {{ form_start(form, {'attr': {'class': 'needs-validation'}, 'novalidate': 'novalidate'}) }}
         <div class="mb-3">
             {{ form_label(form.name, null, {'label_attr': {'class': 'form-label'}}) }}
@@ -45,14 +47,13 @@
             {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': 3, 'placeholder': 'Description (optional)'}}) }}
             {{ form_errors(form.description) }}
         </div>
-
-        <div class="alert alert-info">
-            <small><strong>Note:</strong> Operating System, Open Ports, and Profiling dates are determined automatically after profiling.</small>
-        </div>
-
         <button type="submit" class="btn btn-success">Add Asset</button>
         <a href="{{ path('asset_list') }}" class="btn btn-secondary ms-2">Cancel</a>
     {{ form_end(form) }}
+
+    <div class="alert alert-info mt-3">
+        <strong>Note:</strong> Once created, the system will automatically run a <em>profiling scan</em> to fetch OS, ports and services.
+    </div>
 </div>
 {% endblock %}
 
