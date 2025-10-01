@@ -2,77 +2,77 @@
 {% block title %}Asset List{% endblock %}
 {% block body %}
 <div class="container mt-4">
-<a href="{{ path('dashboard') }}" class="btn btn-secondary mb-3">
-    <i class="bi bi-arrow-left"></i> Back to Dashboard
-</a>
+    <a href="{{ path('dashboard') }}" class="btn btn-secondary mb-3">
+        <i class="bi bi-arrow-left"></i> Back to Dashboard
+    </a>
     <h1 class="mb-4">Assets</h1>
     <a href="{{ path('asset_create') }}" class="btn btn-success mb-3">
         <i class="bi bi-plus-circle"></i> Add New Asset
     </a>
+
     {% for label, messages in app.flashes %}
         <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
             {{ messages|join(', ') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     {% endfor %}
+
     <table class="table table-bordered table-hover align-middle">
         <thead class="table-light">
             <tr>
-                <th>Asset ID</th>
+                <th>#</th>
                 <th>Name</th>
-                <th>IP Address</th>
+                <th>IP</th>
                 <th>URL</th>
                 <th>Domain</th>
                 <th>Type</th>
                 <th>Status</th>
-                <th>OS</th>
-                <th>Open Ports</th>
-                <th>Last Profiled</th>
                 <th>Description</th>
-                <th style="width: 350px;">Actions</th>
+                <th style="width: 300px;">Actions</th>
             </tr>
         </thead>
         <tbody>
-            {% for asset in assets %}
-                <tr>
-                    <td>{{ asset.userAssetNumber }}</td>
-                    <td><a href="{{ path('asset_detail', {id: asset.userAssetNumber}) }}">{{ asset.name }}</a></td>
-                    <td>{{ asset.ipAddress ?? 'N/A' }}</td>
-                    <td>{{ asset.url ?? 'N/A' }}</td>
-                    <td>{{ asset.domain ?? 'N/A' }}</td>
-                    <td>{{ asset.type|capitalize }}</td>
-                    <td>{{ asset.status|capitalize }}</td>
-                    <td>{{ asset.operatingSystem ?? 'Unknown' }}</td>
-                    <td>{{ asset.openPorts ? asset.openPorts|join(', ') : 'N/A' }}</td>
-                    <td>{{ asset.lastProfiledAt ? asset.lastProfiledAt|date('Y-m-d H:i') : 'Never' }}</td>
-                    <td>{{ asset.description|default('')|length > 50 ? asset.description|slice(0, 50) ~ '...' : asset.description }}</td>
-                    <td>
-                        <a href="{{ path('asset_edit', {id: asset.id}) }}" class="btn btn-primary btn-sm me-1">
-                            <i class="bi bi-pencil-fill"></i> Edit
-                        </a>
-                        <a href="{{ path('asset_profile', {id: asset.id}) }}" class="btn btn-info btn-sm me-1">
-                            <i class="bi bi-play-circle"></i> Profile
-                        </a>
-                        <a href="{{ path('asset_vuln_scan', {id: asset.id}) }}" class="btn btn-warning btn-sm me-1">
-                            <i class="bi bi-shield-exclamation"></i> Vuln Scan
-                        </a>
-                        <form method="post" action="{{ path('asset_delete', {id: asset.id}) }}" style="display:inline-block;" 
-                              onsubmit="return confirm('Are you sure you want to delete asset {{ asset.name }}?');">
-                            <input type="hidden" name="_token" value="{{ csrf_token('delete-asset' ~ asset.id) }}">
-                            <button class="btn btn-danger btn-sm" type="submit">
-                                <i class="bi bi-trash-fill"></i> Delete
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="12" class="text-center">No assets found.</td>
-                </tr>
-            {% endfor %}
+        {% for asset in assets %}
+            <tr>
+                <td>{{ asset.userAssetNumber }}</td>
+                <td><a href="{{ path('asset_detail', {id: asset.id}) }}">{{ asset.name }}</a></td>
+                <td>{{ asset.ipAddress ?? 'N/A' }}</td>
+                <td>{{ asset.url ?? 'N/A' }}</td>
+                <td>{{ asset.domain ?? 'N/A' }}</td>
+                <td>{{ asset.type }}</td>
+                <td>{{ asset.status }}</td>
+                <td>{{ asset.description|default('')|slice(0, 50) }}</td>
+                <td>
+                    <a href="{{ path('asset_edit', {id: asset.id}) }}" class="btn btn-primary btn-sm me-1">Edit</a>
+
+                    <form method="post" action="{{ path('asset_profile', {id: asset.id}) }}" style="display:inline-block;">
+                        <input type="hidden" name="_token" value="{{ csrf_token('profile-asset' ~ asset.id) }}">
+                        <button type="submit" class="btn btn-info btn-sm me-1">Profile</button>
+                    </form>
+
+                    <form method="post" action="{{ path('asset_vuln_scan', {id: asset.id}) }}" style="display:inline-block;">
+                        <input type="hidden" name="_token" value="{{ csrf_token('vuln-scan-asset' ~ asset.id) }}">
+                        <button type="submit" class="btn btn-warning btn-sm me-1">Scan</button>
+                    </form>
+
+                    <form method="post" action="{{ path('asset_delete', {id: asset.id}) }}" style="display:inline-block;"
+                          onsubmit="return confirm('Delete {{ asset.name }}?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete-asset' ~ asset.id) }}">
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr><td colspan="9" class="text-center">No assets found.</td></tr>
+        {% endfor %}
         </tbody>
     </table>
 </div>
 {% endblock %}
+
+
+
+
+
 
 
