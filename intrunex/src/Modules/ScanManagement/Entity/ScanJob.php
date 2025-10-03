@@ -30,6 +30,9 @@ class ScanJob
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $scanner = null;
 
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $errorMessage = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -91,6 +94,18 @@ class ScanJob
     public function setScanner(?string $scanner): static
     {
         $this->scanner = $scanner;
+
+        return $this;
+    }
+
+    public function getErrorMessage(): ?string
+    {
+        return $this->errorMessage;
+    }
+
+    public function setErrorMessage(?string $errorMessage): static
+    {
+        $this->errorMessage = $errorMessage;
 
         return $this;
     }

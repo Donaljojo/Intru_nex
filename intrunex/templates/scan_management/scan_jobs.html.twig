@@ -24,7 +24,7 @@
             <td>{{ scanJob.asset.name }}</td>
             <td>{{ scanJob.status|capitalize }}</td>
             <td>{{ scanJob.startedAt ? scanJob.startedAt|date('Y-m-d H:i:s') : 'N/A' }}</td>
-            <td>{{ scanJob.completedAt ? scanJob.completedAt|date('Y-m-d H:i:s') : 'N/A' }}</td>
+                        <td>{{ scanJob.finishedAt ? scanJob.finishedAt|date('Y-m-d H:i:s') : 'N/A' }}</td>
             <td>{{ scanJob.errorMessage ?: '-' }}</td>
             <td>
                 <a href="{{ path('scan_progress', {'id': scanJob.id}) }}" class="btn btn-sm btn-primary">View Progress</a>
