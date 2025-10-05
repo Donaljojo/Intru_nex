@@ -21,3 +21,31 @@ php -v
 sudo apt-get update
 sudo apt-get install -y nmap
 nmap -v
+
+
+
+# Go to home directory
+cd ~
+
+# Remove any old partial clones
+rm -rf nikto
+
+# Clone the official repository
+git clone https://github.com/sullo/nikto.git
+
+# Move into the program folder
+cd nikto/program
+
+# Make the main Perl file executable
+chmod +x nikto.pl
+
+
+./nikto.pl -Version
+
+
+sudo ln -sf $(pwd)/nikto.pl /usr/local/bin/nikto
+
+
+export PATH="$HOME/nikto/program:$PATH"
+source ~/.bashrc
+
