@@ -1,10 +1,10 @@
 <?php
 
-namespace App\\Modules\\ScanManagement\\Service;
+namespace App\Modules\ScanManagement\Service;
 
-use App\\Modules\\AssetDiscovery\\Entity\\Asset;
-use App\\Modules\\ScanManagement\\Entity\\ScanJob;
-use Doctrine\\ORM\\EntityManagerInterface;
+use App\Modules\AssetDiscovery\Entity\Asset;
+use App\Modules\ScanManagement\Entity\ScanJob;
+use Doctrine\ORM\EntityManagerInterface;
 
 class ScanJobService
 {

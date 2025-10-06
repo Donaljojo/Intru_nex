@@ -1,12 +1,12 @@
 <?php
 
-namespace App\\Modules\\ScanManagement\\MessageHandler;
+namespace App\Modules\ScanManagement\MessageHandler;
 
-use App\\Modules\\ScanManagement\\Message\\ScanJobMessage;
-use App\\Modules\\ScanManagement\\Service\\ScanJobService;
-use App\\Modules\\VulnerabilityDetection\\Service\\NiktoScanService;
-use Doctrine\\ORM\\EntityManagerInterface;
-use Symfony\\Component\\Messenger\\Attribute\\AsMessageHandler;
+use App\Modules\ScanManagement\Message\ScanJobMessage;
+use App\Modules\ScanManagement\Service\ScanJobService;
+use App\Modules\VulnerabilityDetection\Service\NiktoScanService;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
 class ScanJobHandler
@@ -35,7 +35,7 @@ class ScanJobHandler
         try {
             $scanJob = $this->niktoScanService->scan($asset, $scanJob);
             $scanJob->setStatus('completed');
-        } catch (\\Exception $e) {
+        } catch (\Exception $e) {
             $scanJob->setStatus('failed');
             $scanJob->setErrorMessage($e->getMessage());
         } finally {
