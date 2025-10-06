@@ -21,12 +21,12 @@ class Asset
 private ?int $userAssetNumber = null;
 
 
-public function getUserAssetNumber(): int
+public function getUserAssetNumber(): ?int
 {
     return $this->userAssetNumber;
 }
 
-public function setUserAssetNumber(int $num): self
+public function setUserAssetNumber(?int $num): self
 {
     $this->userAssetNumber = $num;
     return $this;

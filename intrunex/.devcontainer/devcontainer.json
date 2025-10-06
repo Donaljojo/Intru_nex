@@ -5,7 +5,7 @@
     "dockerfile": "Dockerfile"
   },
   // Runs after container is created
-  "postCreateCommand": "composer install && php bin/console cache:clear",
+  "postCreateCommand": "composer install && php bin/console cache:clear && chmod +x bin/worker-run.sh && ./bin/worker-run.sh &",
   // Recommended VS Code extensions
   "customizations": {
     "vscode": {

@@ -1,22 +1,25 @@
 <?php
 
-namespace App\Modules\ScanManagement\MessageHandler;
+namespace App\\Modules\\ScanManagement\\MessageHandler;
 
-use App\Modules\ScanManagement\Message\ScanJobMessage;
-use App\Modules\ScanManagement\Service\ScanJobService;
-use App\Modules\VulnerabilityDetection\Service\NiktoScanService;
-use Symfony\Component\Messenger\Attribute\AsMessageHandler;
+use App\\Modules\\ScanManagement\\Message\\ScanJobMessage;
+use App\\Modules\\ScanManagement\\Service\\ScanJobService;
+use App\\Modules\\VulnerabilityDetection\\Service\\NiktoScanService;
+use Doctrine\\ORM\\EntityManagerInterface;
+use Symfony\\Component\\Messenger\\Attribute\\AsMessageHandler;
 
 #[AsMessageHandler]
 class ScanJobHandler
 {
     private ScanJobService $scanJobService;
     private NiktoScanService $niktoScanService;
+    private EntityManagerInterface $em;
 
-    public function __construct(ScanJobService $scanJobService, NiktoScanService $niktoScanService)
+    public function __construct(ScanJobService $scanJobService, NiktoScanService $niktoScanService, EntityManagerInterface $em)
     {
         $this->scanJobService = $scanJobService;
         $this->niktoScanService = $niktoScanService;
+        $this->em = $em;
     }
 
     public function __invoke(ScanJobMessage $message)
@@ -27,9 +30,18 @@ class ScanJobHandler
             throw new \RuntimeException('Asset not found for id ' . $message->getAssetId());
         }
 
-        // Run Nikto scan via VulnerabilityDetection module
-        $scanJob = $this->niktoScanService->scanAsset($asset);
+        $scanJob = $this->scanJobService->createScanJob($asset);
 
-        // You can add further steps here, like notify user or update status.
+        try {
+            $scanJob = $this->niktoScanService->scan($asset, $scanJob);
+            $scanJob->setStatus('completed');
+        } catch (\\Exception $e) {
+            $scanJob->setStatus('failed');
+            $scanJob->setErrorMessage($e->getMessage());
+        } finally {
+            $scanJob->setFinishedAt(new \DateTimeImmutable());
+            $this->em->persist($scanJob);
+            $this->em->flush();
+        }
     }
 }

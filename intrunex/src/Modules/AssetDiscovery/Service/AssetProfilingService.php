@@ -23,6 +23,11 @@ class AssetProfilingService
             throw new \RuntimeException("No target (IP/URL) specified for asset profiling.");
         }
 
+        // If the target is a URL, extract the host
+        if (filter_var($target, FILTER_VALIDATE_URL)) {
+            $target = parse_url($target, PHP_URL_HOST);
+        }
+
         $process = new Process(['nmap', '-sV', $target]);
         try {
             $process->mustRun();
