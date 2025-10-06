@@ -27,6 +27,7 @@ framework:
             Symfony\Component\Notifier\Message\SmsMessage: async
             'App\Modules\ScanManagement\Message\ScanJobMessage': async
             'App\Modules\VulnerabilityDetection\Message\NiktoScanMessage': async
+            'App\Modules\AssetDiscovery\Message\ProfileAssetMessage': async
 
             # Route your messages to the transports
             # 'App\Message\YourMessage': async

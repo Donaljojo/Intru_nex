@@ -2,20 +2,29 @@
 namespace App\Modules\AssetDiscovery\Service;
 
 use App\Modules\AssetDiscovery\Entity\Asset;
+use App\Modules\AssetDiscovery\Message\ProfileAssetMessage;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class AssetProfilingService
 {
     private EntityManagerInterface $em;
+    private MessageBusInterface $bus;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em, MessageBusInterface $bus)
     {
         $this->em = $em;
+        $this->bus = $bus;
     }
 
     public function profile(Asset $asset): void
+    {
+        $this->bus->dispatch(new ProfileAssetMessage($asset->getId()));
+    }
+
+    public function performProfiling(Asset $asset): void
     {
         $target = $asset->getIpAddress() ?: $asset->getUrl();
 
@@ -45,36 +54,34 @@ class AssetProfilingService
 
         // 🔹 Extract Ports & Services
         $services = [];
-$detectedType = null;
-$detectedStatus = 'Inactive';
+        $detectedType = null;
+        $detectedStatus = 'Inactive';
 
-if (preg_match_all('/(\d+)\/tcp\s+open\s+([^\s]+)\s*([^\n]*)/', $output, $matches, PREG_SET_ORDER)) {
-    foreach ($matches as $m) {
-        $port = $m[1];
-        $service = $m[2];
-        $extra = trim($m[3]);
+        if (preg_match_all('/(\d+)\/tcp\s+open\s+([^\s]+)\s*([^\n]*)/', $output, $matches, PREG_SET_ORDER)) {
+            foreach ($matches as $m) {
+                $port = $m[1];
+                $service = $m[2];
+                $extra = trim($m[3]);
 
-        // Always store as plain string (prevents Array→String bug)
-        $services[] = (string) sprintf("%s/tcp - %s %s", $port, $service, $extra);
+                // Always store as plain string (prevents Array→String bug)
+                $services[] = (string) sprintf("%s/tcp - %s %s", $port, $service, $extra);
 
-        // Detect type
-        if (in_array($port, ['80','443'])) {
-            $detectedType = 'Web';
-        } elseif ($service === 'ssh') {
-            $detectedType = 'Server';
-        } elseif ($service === 'ftp') {
-            $detectedType = 'File Transfer';
-        } elseif (in_array($service, ['mysql', 'postgresql'])) {
-            $detectedType = 'Database';
+                // Detect type
+                if (in_array($port, ['80','443'])) {
+                    $detectedType = 'Web';
+                } elseif ($service === 'ssh') {
+                    $detectedType = 'Server';
+                } elseif ($service === 'ftp') {
+                    $detectedType = 'File Transfer';
+                } elseif (in_array($service, ['mysql', 'postgresql'])) {
+                    $detectedType = 'Database';
+                }
+
+                $detectedStatus = 'Active';
+            }
         }
 
-        $detectedStatus = 'Active';
-    }
-}
-
-$asset->setOpenPorts(array_values($services)); // ✅ force reindex & string array
-
-       
+        $asset->setOpenPorts(array_values($services)); // ✅ force reindex & string array
 
         $profiledAt = new \DateTimeImmutable();
         // Update asset

@@ -47,3 +47,37 @@
 </form>
 
 {% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const selectAll = document.getElementById('select-all');
+        const checkboxes = document.querySelectorAll('.scan-job-checkbox');
+        const deleteSelectedBtn = document.getElementById('delete-selected');
+
+        function toggleDeleteButton() {
+            const anyChecked = Array.from(checkboxes).some(c => c.checked);
+            deleteSelectedBtn.disabled = !anyChecked;
+        }
+
+        selectAll.addEventListener('change', function() {
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAll.checked;
+            });
+            toggleDeleteButton();
+        });
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const allChecked = Array.from(checkboxes).every(c => c.checked);
+                selectAll.checked = allChecked;
+                toggleDeleteButton();
+            });
+        });
+
+        // Initial state
+        toggleDeleteButton();
+    });
+</script>
+{% endblock %}

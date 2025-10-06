@@ -162,7 +162,7 @@ class AssetController extends AbstractController
 
         if ($this->isCsrfTokenValid('profile-asset'.$asset->getId(), $request->request->get('_token'))) {
             $profilingService->profile($asset);
-            $this->addFlash('success', 'Asset profiling completed.');
+            $this->addFlash('success', 'Asset profiling started.');
         } else {
             $this->addFlash('error', 'Invalid CSRF token.');
         }
