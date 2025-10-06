@@ -29,6 +29,7 @@ class AssetProfilingService
         }
 
         $process = new Process(['nmap', '-sV', $target]);
+        $process->setTimeout(300);
         try {
             $process->mustRun();
         } catch (ProcessFailedException $e) {

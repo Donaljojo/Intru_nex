@@ -7,34 +7,43 @@
 <a href="{{ path('dashboard') }}" class="btn btn-secondary mb-3">
     ← Back to Dashboard
 </a>
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Asset</th>
-            <th>Status</th>
-            <th>Started At</th>
-            <th>Completed At</th>
-            <th>Error Message</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for scanJob in scanJobs %}
-        <tr>
-            <td>{{ scanJob.asset.name }}</td>
-            <td>{{ scanJob.status|capitalize }}</td>
-            <td>{{ scanJob.startedAt ? scanJob.startedAt|date('Y-m-d H:i:s') : 'N/A' }}</td>
-                        <td>{{ scanJob.finishedAt ? scanJob.finishedAt|date('Y-m-d H:i:s') : 'N/A' }}</td>
-            <td>{{ scanJob.errorMessage ?: '-' }}</td>
-            <td>
-                <a href="{{ path('scan_progress', {'id': scanJob.id}) }}" class="btn btn-sm btn-primary">View Progress</a>
-            </td>
-        </tr>
-        {% else %}
-        <tr>
-            <td colspan="6" class="text-center">No scan jobs found.</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<form method="post" action="{{ path('scan_job_delete_multiple') }}" onsubmit="return confirm('Are you sure you want to delete the selected scan jobs?');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete_multiple_scans') }}">
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th><input type="checkbox" id="select-all"></th>
+                <th>Asset</th>
+                <th>Status</th>
+                <th>Started At</th>
+                <th>Completed At</th>
+                <th>Error Message</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for scanJob in scanJobs %}
+            <tr>
+                <td><input type="checkbox" name="scan_job_ids[]" value="{{ scanJob.id }}" class="scan-job-checkbox"></td>
+                <td>{{ scanJob.asset.name }}</td>
+                <td>{{ scanJob.status|capitalize }}</td>
+                <td>{{ scanJob.startedAt ? scanJob.startedAt|date('Y-m-d H:i:s') : 'N/A' }}</td>
+                <td>{{ scanJob.finishedAt ? scanJob.finishedAt|date('Y-m-d H:i:s') : 'N/A' }}</td>
+                <td>{{ scanJob.errorMessage ?: '-' }}</td>
+                <td>
+                    <a href="{{ path('scan_progress', {'id': scanJob.id}) }}" class="btn btn-sm btn-primary">View Progress</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" class="text-center">No scan jobs found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <button type="submit" class="btn btn-danger" id="delete-selected" disabled>Delete Selected</button>
+</form>
+
 {% endblock %}

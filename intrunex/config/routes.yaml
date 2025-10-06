@@ -55,4 +55,11 @@ scan_management:
     type: attribute
     prefix: /scan-management
 
+# Vulnerability Detection module
+vulnerability_detection:
+    resource: '../src/Modules/VulnerabilityDetection/Controller'
+    type: attribute
+    prefix: /vulnerability-detection
+
+
 

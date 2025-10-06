@@ -106,6 +106,41 @@ class ScanJobController extends AbstractController
 
         return $this->redirectToRoute('scan_job_list');
     }
+
+    #[Route('/scan-jobs/delete-multiple', name: 'scan_job_delete_multiple', methods: ['POST'])]
+    public function deleteMultiple(Request $request, EntityManagerInterface $em): Response
+    {
+        $submittedToken = $request->request->get('_token');
+        if (!$this->isCsrfTokenValid('delete_multiple_scans', $submittedToken)) {
+            $this->addFlash('error', 'Invalid CSRF token.');
+            return $this->redirectToRoute('scan_job_list');
+        }
+
+        $scanJobIds = $request->request->all('scan_job_ids');
+
+        if (empty($scanJobIds)) {
+            $this->addFlash('error', 'No scan jobs selected.');
+            return $this->redirectToRoute('scan_job_list');
+        }
+
+        $scanJobs = $em->getRepository(ScanJob::class)->findBy(['id' => $scanJobIds]);
+
+        $deletedCount = 0;
+        foreach ($scanJobs as $scanJob) {
+            // Ownership check
+            if ($scanJob->getAsset()->getUser() === $this->getUser()) {
+                $em->remove($scanJob);
+                $deletedCount++;
+            }
+        }
+
+        if ($deletedCount > 0) {
+            $em->flush();
+            $this->addFlash('success', $deletedCount . ' scan job(s) deleted.');
+        } else {
+            $this->addFlash('error', 'No scan jobs were deleted. You may not have permission to delete the selected jobs.');
+        }
+
+        return $this->redirectToRoute('scan_job_list');
+    }
 }
-
-

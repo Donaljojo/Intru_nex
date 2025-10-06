@@ -55,4 +55,29 @@ class DashboardController extends AbstractController
             'scanJobs' => $scanJobs,
         ]);
     }
+
+    #[Route('/dashboard/asset/{id}/scan', name: 'dashboard_asset_scan', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function scanAsset(Request $request, Asset $asset, EntityManagerInterface $em, MessageBusInterface $bus): Response
+    {
+        // Security check to ensure the asset belongs to the current user
+        if ($asset->getUser() !== $this->getUser()) {
+            $this->addFlash('error', 'You are not authorized to scan this asset.');
+            return $this->redirectToRoute('dashboard');
+        }
+
+        // Create and dispatch a scan job message
+        $scanJob = new ScanJob();
+        $scanJob->setAsset($asset);
+        $scanJob->setStartedAt(new \DateTimeImmutable());
+        $scanJob->setStatus('Pending');
+        $em->persist($scanJob);
+        $em->flush();
+
+        $bus->dispatch(new ScanJobMessage($scanJob->getId()));
+
+        $this->addFlash('success', 'Scan started for asset: ' . $asset->getName());
+
+        return $this->redirectToRoute('dashboard');
+    }
 }
