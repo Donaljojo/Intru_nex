@@ -8,9 +8,7 @@ if (container) {
   const root = ReactDOM.createRoot(container);
   root.render(
     <React.StrictMode>
-      <div style={{ width: '100%', height: '600px', position: 'relative' }}>
-        <DarkVeil />
-      </div>
+      <DarkVeil />
     </React.StrictMode>
   );
 }
