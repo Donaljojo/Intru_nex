@@ -13,7 +13,7 @@ sudo mv /home/codespace/.symfony5/bin/symfony /usr/local/bin/symfony
 RUN curl -sS https://get.symfony.com/cli/installer | bash && \
      mv /root/.symfony5/bin/symfony /usr/local/bin/symfony
 
-echo 'export PATH=/usr/bin:$PATH' >> ~/.bashrc
+echo '' >> ~/.bashrcexport PATH=/usr/bin:$PATH
 source ~/.bashrc
 php -v
 
