@@ -1,76 +1,94 @@
 {% extends 'base.html.twig' %}
 {% block title %}Dashboard{% endblock %}
 {% block body %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">IntruNex</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_logout') }}"
+                       onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                       Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid mt-4">
   <h1>Welcome to IntruNex Dashboard</h1>
   {% if app.user %}
     <p>You are logged in as {{ app.user.email }}</p>
   {% else %}
     <p>You are not logged in.</p>
   {% endif %}
-  <a href="{{ path('app_logout') }}"
-   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-   Logout
-</a>
 
-<form id="logout-form" action="{{ path('app_logout') }}" method="post" style="display: none;">
-    {{ csrf_token('logout')|raw }}
-</form>
-<div class="row mb-4">
-    <div class="col-md-6">
-        <div class="card text-white bg-primary mb-3">
-            <div class="card-header">Assets</div>
-            <div class="card-body">
-                <h5 class="card-title">{{ assetCount }}</h5>
-                <a href="{{ path('asset_list') }}" class="btn btn-light mb-3">View Assets</a>
-                <h6>Scan Asset</h6>
-                <table class="table table-striped table-bordered mb-4">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>IP Address</th>
-                            <th>Scan</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for asset in assets %}
-                            <tr>
-                                <td>{{ asset.name }}</td>
-                                <td>{{ asset.ipAddress ?? 'N/A' }}</td>
-                                <td>
-                                    <form method="post" action="{{ path('dashboard_asset_scan', {id: asset.id}) }}" onsubmit="return confirm('Start scan for {{ asset.name }}?');" style="display:inline;">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('scan-asset' ~ asset.id) }}">
-                                        <button type="submit" class="btn btn-warning btn-sm">
-                                            <i class="bi bi-search"></i> Scan
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                        {% else %}
-                            <tr>
-                                <td colspan="3" class="text-center">No assets available for scanning.</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+  <form id="logout-form" action="{{ path('app_logout') }}" method="post" style="display: none;">
+      {{ csrf_token('logout')|raw }}
+  </form>
 
-                <!-- New button linking to the separate Recent Scan Jobs page -->
-                <a href="{{ path('scan_job_list') }}" class="btn btn-info">
-                    View Recent Scan Jobs
-                </a>
+  <div class="row mb-4">
+      <div class="col-lg-6 col-md-12 mb-4">
+          <div class="card text-white bg-primary mb-3">
+              <div class="card-header">Assets</div>
+              <div class="card-body">
+                  <h5 class="card-title">{{ assetCount }}</h5>
+                  <a href="{{ path('asset_list') }}" class="btn btn-light mb-3">View Assets</a>
+                  <h6>Scan Asset</h6>
+                  <div class="table-responsive">
+                      <table class="table table-striped table-bordered mb-4">
+                          <thead>
+                              <tr>
+                                  <th>Name</th>
+                                  <th>IP Address</th>
+                                  <th>Scan</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              {% for asset in assets %}
+                                  <tr>
+                                      <td>{{ asset.name }}</td>
+                                      <td>{{ asset.ipAddress ?? 'N/A' }}</td>
+                                      <td>
+                                          <form method="post" action="{{ path('dashboard_asset_scan', {id: asset.id}) }}" onsubmit="return confirm('Start scan for {{ asset.name }}?');" style="display:inline;">
+                                              <input type="hidden" name="_token" value="{{ csrf_token('scan-asset' ~ asset.id) }}">
+                                              <button type="submit" class="btn btn-warning btn-sm">
+                                                  <i class="bi bi-search"></i> Scan
+                                              </button>
+                                          </form>
+                                      </td>
+                                  </tr>
+                              {% else %}
+                                  <tr>
+                                      <td colspan="3" class="text-center">No assets available for scanning.</td>
+                                  </tr>
+                              {% endfor %}
+                          </tbody>
+                      </table>
+                  </div>
 
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="card text-white bg-danger mb-3">
-            <div class="card-header">Vulnerabilities</div>
-            <div class="card-body">
-                <h5 class="card-title">{{ vulnerabilityCount }}</h5>
-                <a href="{{ path('vulnerability_list') }}" class="btn btn-light">View Vulnerabilities</a>
-            </div>
-        </div>
-    </div>
+                  <!-- New button linking to the separate Recent Scan Jobs page -->
+                  <a href="{{ path('scan_job_list') }}" class="btn btn-info">
+                      View Recent Scan Jobs
+                  </a>
+
+              </div>
+          </div>
+      </div>
+      <div class="col-lg-6 col-md-12 mb-4">
+          <div class="card text-white bg-danger mb-3">
+              <div class="card-header">Vulnerabilities</div>
+              <div class="card-body">
+                  <h5 class="card-title">{{ vulnerabilityCount }}</h5>
+                  <a href="{{ path('vulnerability_list') }}" class="btn btn-light">View Vulnerabilities</a>
+              </div>
+          </div>
+      </div>
+  </div>
 </div>
 {% endblock %}
-
-
