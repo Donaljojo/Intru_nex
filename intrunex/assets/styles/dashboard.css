@@ -1,6 +1,8 @@
-/* --- Add these variables to your :root --- */
 :root {
-    /* ... your existing variables ... */
+    --bg-dark: transparent; /* Set main background to transparent */
+    --bg-light-dark: rgba(49, 54, 63, 0.7); /* Use a semi-opaque color for cards */
+    --text-light: #EEEEEE;
+    --text-dark: #ADB5BD;
     --accent-blue-light: #76ABAE;
     --accent-blue-dark: #4F7072;
     --color-critical: #E63946;
@@ -20,24 +22,30 @@
 .dashboard-header {
     display: flex;
     align-items: center;
+    justify-content: space-between; /* Changed */
     padding: 15px 30px;
     background-color: var(--bg-light-dark);
     border-bottom: 1px solid var(--border-color);
+    position: relative; /* Added for nav positioning */
 }
 .dashboard-header .logo { font-size: 1.2rem; }
 .dashboard-header .logo strong { color: var(--text-light); }
 
 .header-info {
-    margin-left: 20px;
+    padding: 15px 30px;
+    background-color: var(--bg-dark);
+    border-bottom: 1px solid var(--border-color);
     color: var(--text-dark);
 }
 .header-info .breadcrumbs { font-size: 0.9rem; }
 .header-info .breadcrumbs span { display: block; font-size: 0.8rem; color: #888; }
 
 .dashboard-nav {
-    margin-left: auto;
     display: flex;
     gap: 30px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
 }
 .dashboard-nav a {
     color: var(--text-dark);
@@ -53,7 +61,6 @@
 }
 .user-profile {
     font-size: 2.2rem;
-    margin-left: 40px;
     color: var(--text-dark);
 }
 
@@ -67,15 +74,17 @@
     display: grid;
     gap: 25px;
     margin-bottom: 25px;
+    align-items: start; /* Added */
 }
-.top-grid { grid-template-columns: 1fr 1.5fr 1fr; }
-.mid-grid { grid-template-columns: 1fr 1.5fr; }
+.top-grid { grid-template-columns: repeat(3, 1fr); }
+.mid-grid { grid-template-columns: repeat(3, 1fr); }
 
 .card {
     background-color: var(--bg-light-dark);
     border-radius: 12px;
     padding: 25px;
     border: 1px solid var(--border-color);
+    backdrop-filter: blur(10px); /* Add glassmorphism effect */
 }
 .card h3 {
     margin-top: 0;
