@@ -44,6 +44,13 @@ doctrine:
                 prefix: 'App\Modules\ScanManagement\Entity'
                 alias: ScanManagement
 
+            AuditLogging:
+                is_bundle: false
+                type: attribute
+                dir: '%kernel.project_dir%/src/Modules/AuditLogging/Entity'
+                prefix: 'App\Modules\AuditLogging\Entity'
+                alias: AuditLogging
+
 
 
 

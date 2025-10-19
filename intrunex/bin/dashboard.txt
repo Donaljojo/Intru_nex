@@ -1,0 +1,346 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}IntruNex Dashboard{% endblock %}
+
+{% block stylesheets %}
+    {{ encore_entry_link_tags('app') }}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+{% endblock %}
+
+{% block body %}
+<div class="dashboard-wrapper">
+    <header class="dashboard-header">
+        <div class="logo">
+            <img src="{{ asset('images/logo.png') }}" alt="IntruNex Logo">
+            <span>IntruNex <strong>Dashboard</strong></span>
+        </div>
+        <div class="header-info">
+            <div class="breadcrumbs">
+                Dashboard / Overview
+                <span>November 13, 2024</span>
+            </div>
+        </div>
+        <nav class="dashboard-nav">
+            <a href="#" class="active">Overview</a>
+            <a href="#">Reports</a>
+            <a href="#">Analytics</a>
+            <a href="#">Settings</a>
+        </nav>
+        <div class="user-profile">
+            <i class="fas fa-user-circle"></i>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="grid-container top-grid">
+            <div class="card system-health">
+                <h3>System Health</h3>
+                <div class="progress-donut" style="--progress: 99;">
+                    <div class="progress-text">
+                        <span class="percentage">99%</span>
+                        <span class="label">Secure</span>
+                    </div>
+                </div>
+                <ul class="health-stats">
+                    <li><span class="dot green"></span> Total Scans</li>
+                    <li><span class="dot green"></span> Uptime</li>
+                    <li><span class="dot gray"></span> Vulnerabilities Detected</li>
+                    <li><span class="dot gray"></span> Malicious Script Activity</li>
+                </ul>
+            </div>
+
+            <div class="card activity-log">
+                <h3>Activity Log</h3>
+                <ul>
+                    {% for item in activity_log %}
+                        <li><span class="log-dot"></span> {{ item.message }} <strong>{{ item.status }}</strong></li>
+                    {% endfor %}
+                </ul>
+                <a href="#" class="btn btn-secondary">VIEW FULL LOG</a>
+            </div>
+
+            <div class="card add-asset">
+                <h3>Add & Scan New Asset</h3>
+                <form>
+                    <label for="asset-ip">IP Address</label>
+                    <input type="text" id="asset-ip" placeholder="Asset Name/Tag">
+                    <div class="button-group">
+                        <button type="button" class="btn btn-secondary">Profile Asset</button>
+                        <button type="submit" class="btn btn-primary">Run Scan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="grid-container mid-grid">
+            <div class="card assets-overview">
+                <h3>Assets Overview</h3>
+                <ul>
+                    <li>
+                        <span class="asset-name">Server Database</span>
+                        <span class="status-dot green"></span> Monitored
+                        <span class="action-circle"></span>
+                    </li>
+                    <li>
+                        <span class="asset-name">Web Application</span>
+                        <span class="status-dot orange"></span> 1 High
+                        <span class="action-circle"></span>
+                    </li>
+                    <li>
+                        <span class="asset-name">Network Firewall</span>
+                        <span class="status-dot red"></span> 0 Low
+                        <span class="action-circle"></span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="card recent-vulnerabilities">
+                <h3>Recent Vulnerabilities by Asset</h3>
+                <ul>
+                    <li>
+                        <span class="vulnerability-name">SQL Injection (Server)</span>
+                        <span class="severity-tag critical">Critical</span>
+                        <span class="expand-icon">+</span>
+                    </li>
+                    <li>
+                        <span class="vulnerability-name">XSS Exploit (Web App)</span>
+                        <span class="severity-tag high">High</span>
+                        <span class="expand-icon">+</span>
+                    </li>
+                    <li>
+                        <span class="vulnerability-name">Misconfiguration (Web App)</span>
+                        <span class="severity-tag medium">Medium</span>
+                        <span class="expand-icon">+</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card scan-reports">
+            <h3>Scan Reports</h3>
+            <table class="scan-reports-table">
+                <thead>
+                    <tr>
+                        <th>Report ID</th>
+                        <th>Date</th>
+                        <th>Asset</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>RPT-2024-001</td>
+                        <td>10/26/2024</td>
+                        <td>Server Database</td>
+                        <td>Completed</td>
+                        <td><a href="#" class="btn btn-primary btn-sm">View Report</a></td>
+                    </tr>
+                    <tr>
+                        <td>XSS-Exploit-002</td>
+                        <td>10/25/2024</td>
+                        <td>Web Application</td>
+                        <td>Completed</td>
+                        <td><a href="#" class="btn btn-primary btn-sm">View Report</a></td>
+                    </tr>
+                    <tr>
+                        <td>Login-Brute-Force</td>
+                        <td>10/24/2024</td>
+                        <td>Auth Service</td>
+                        <td>Completed</td>
+                        <td><a href="#" class="btn btn-primary btn-sm">View Report</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <footer class="dashboard-footer">
+        <p>© {{ "now"|date("Y") }} IntruNex. All rights reserved.</p>
+        <div class="social-links">
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+    </footer>
+</div>
+{% endblock %}
+
+
+/* --- Add these variables to your :root --- */
+:root {
+    /* ... your existing variables ... */
+    --accent-blue-light: #76ABAE;
+    --accent-blue-dark: #4F7072;
+    --color-critical: #E63946;
+    --color-high: #F4A261;
+    --color-medium: #E9C46A;
+    --color-green: #2A9D8F;
+    --border-color: #4A515A;
+}
+
+/* --- Dashboard Specific Styles --- */
+.dashboard-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--bg-dark);
+}
+.dashboard-header {
+    display: flex;
+    align-items: center;
+    padding: 15px 30px;
+    background-color: var(--bg-light-dark);
+    border-bottom: 1px solid var(--border-color);
+}
+.dashboard-header .logo { font-size: 1.2rem; }
+.dashboard-header .logo strong { color: var(--text-light); }
+
+.header-info {
+    margin-left: 20px;
+    color: var(--text-dark);
+}
+.header-info .breadcrumbs { font-size: 0.9rem; }
+.header-info .breadcrumbs span { display: block; font-size: 0.8rem; color: #888; }
+
+.dashboard-nav {
+    margin-left: auto;
+    display: flex;
+    gap: 30px;
+}
+.dashboard-nav a {
+    color: var(--text-dark);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 10px 0;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+.dashboard-nav a.active, .dashboard-nav a:hover {
+    color: var(--accent-blue-light);
+    border-bottom-color: var(--accent-blue-light);
+}
+.user-profile {
+    font-size: 2.2rem;
+    margin-left: 40px;
+    color: var(--text-dark);
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 30px;
+}
+
+/* --- Grids and Cards --- */
+.grid-container {
+    display: grid;
+    gap: 25px;
+    margin-bottom: 25px;
+}
+.top-grid { grid-template-columns: 1fr 1.5fr 1fr; }
+.mid-grid { grid-template-columns: 1fr 1.5fr; }
+
+.card {
+    background-color: var(--bg-light-dark);
+    border-radius: 12px;
+    padding: 25px;
+    border: 1px solid var(--border-color);
+}
+.card h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: var(--text-light);
+}
+
+/* System Health Card */
+.system-health { text-align: center; }
+.progress-donut {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin: 10px auto 25px;
+    display: grid;
+    place-items: center;
+    background: conic-gradient(var(--color-green) calc(var(--progress) * 1%), var(--border-color) 0);
+}
+.progress-donut::before {
+    content: '';
+    display: block;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: var(--bg-light-dark);
+}
+.progress-text { position: absolute; text-align: center; }
+.progress-text .percentage { font-size: 2.5rem; font-weight: 700; color: var(--text-light); }
+.progress-text .label { display: block; font-size: 1rem; color: var(--text-dark); }
+.health-stats { list-style: none; padding: 0; margin: 0; text-align: left; }
+.health-stats li { margin-bottom: 8px; color: var(--text-dark); }
+.health-stats .dot { height: 10px; width: 10px; border-radius: 50%; display: inline-block; margin-right: 10px;}
+.dot.green { background-color: var(--color-green); }
+.dot.gray { background-color: #6c757d; }
+
+/* Activity Log Card */
+.activity-log { background-color: var(--accent-blue-dark); }
+.activity-log ul { list-style: none; padding: 0; margin: 0 0 20px 0; }
+.activity-log li { margin-bottom: 12px; display: flex; align-items: center; color: var(--text-light); }
+.activity-log .log-dot { height: 8px; width: 8px; border-radius: 50%; background-color: var(--text-light); margin-right: 12px; }
+
+/* Add Asset Card */
+.add-asset label { display: block; margin-bottom: 5px; color: var(--text-dark); font-size: 0.9rem; }
+.add-asset input { width: 100%; padding: 12px; border-radius: 6px; border: 1px solid var(--border-color); background-color: var(--bg-dark); color: var(--text-light); margin-bottom: 15px; }
+.add-asset .button-group { display: flex; gap: 10px; }
+.add-asset .btn { flex-grow: 1; }
+.btn.btn-primary { background: var(--accent-blue-light); color: var(--bg-dark); border: none; }
+.btn.btn-secondary { background: transparent; color: var(--text-light); border: 1px solid var(--accent-blue-light); }
+
+/* Assets Overview & Vulnerabilities */
+.assets-overview ul, .recent-vulnerabilities ul { list-style: none; padding: 0; margin: 0; }
+.assets-overview li, .recent-vulnerabilities li {
+    display: flex;
+    align-items: center;
+    padding: 15px 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+.assets-overview li:last-child, .recent-vulnerabilities li:last-child { border-bottom: none; }
+.asset-name, .vulnerability-name { flex-grow: 1; color: var(--text-light); }
+.status-dot { height: 10px; width: 10px; border-radius: 50%; margin-right: 8px; }
+.status-dot.green { background-color: var(--color-green); }
+.status-dot.orange { background-color: var(--color-high); }
+.status-dot.red { background-color: var(--color-critical); }
+.action-circle { height: 24px; width: 24px; border: 1px solid var(--border-color); border-radius: 50%; margin-left: auto; }
+
+.severity-tag {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+.severity-tag.critical { background-color: var(--color-critical); color: white; }
+.severity-tag.high { background-color: var(--color-high); color: var(--bg-dark); }
+.severity-tag.medium { background-color: var(--color-medium); color: var(--bg-dark); }
+.expand-icon { margin-left: auto; font-size: 1.5rem; color: var(--text-dark); }
+
+/* Scan Reports Table */
+.scan-reports-table { width: 100%; border-collapse: collapse; }
+.scan-reports-table th, .scan-reports-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+.scan-reports-table th { color: var(--text-dark); font-weight: 600; }
+.scan-reports-table td { color: var(--text-light); }
+.btn.btn-sm { padding: 6px 12px; font-size: 0.8rem; }
+
+/* Footer */
+.dashboard-footer {
+    padding: 20px 30px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--text-dark);
+}

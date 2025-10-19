@@ -6,6 +6,7 @@ use App\Modules\AssetDiscovery\Entity\Asset;
 use App\Modules\AssetVulnerability\Entity\Vulnerability;
 use App\Modules\ScanManagement\Entity\ScanJob;
 use App\Modules\ScanManagement\Message\ScanJobMessage; // Use generic ScanJobMessage now
+use App\Modules\AuditLogging\Entity\ActivityLog;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -48,11 +49,26 @@ class DashboardController extends AbstractController
             ->setMaxResults(10);
         $scanJobs = $qbScanJobs->getQuery()->getResult();
 
+        $activityLog = $em->getRepository(ActivityLog::class)->findBy([], ['createdAt' => 'DESC'], 5);
+
+        // Recent vulnerabilities for user's assets
+        $qbRecentVulnerabilities = $em->createQueryBuilder()
+            ->select('v')
+            ->from(Vulnerability::class, 'v')
+            ->join('v.asset', 'a')
+            ->where('a.user = :user')
+            ->setParameter('user', $user)
+            ->orderBy('v.discoveredAt', 'DESC')
+            ->setMaxResults(5);
+        $recentVulnerabilities = $qbRecentVulnerabilities->getQuery()->getResult();
+
         return $this->render('dashboard/index.html.twig', [
             'assetCount' => $assetCount,
             'vulnerabilityCount' => $vulnerabilityCount,
             'assets' => $assets,
             'scanJobs' => $scanJobs,
+            'activity_log' => $activityLog,
+            'recentVulnerabilities' => $recentVulnerabilities,
         ]);
     }
 

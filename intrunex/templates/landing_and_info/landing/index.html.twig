@@ -1,42 +1,299 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Welcome to IntruNex{% endblock %}
+{% block title %}IntruNex - Simplified Security{% endblock %}
+
+{% block stylesheets %}
+    {{ encore_entry_link_tags('app') }}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        :root {
+            --bg-dark: #222831;
+            --bg-light-dark: #31363F;
+            --bg-card: #2a3038;
+            --primary-blue: #76ABAE;
+            --accent-green: #90D26D;
+            --text-light: #EEEEEE;
+            --text-dark: #B0B0B0;
+            --font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            font-family: var(--font-family);
+            background-color: transparent;
+            color: var(--text-light);
+            font-size: 16px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .main-header {
+            padding: 20px 0;
+        }
+
+        .main-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-light);
+            font-weight: 600;
+            font-size: 1.5rem;
+        }
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 40px;
+            margin: 0;
+            padding: 0;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        .nav-links a:hover {
+            color: var(--text-light);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        .btn-contact {
+            background-color: var(--bg-card);
+            color: var(--text-light);
+            border: 1px solid var(--primary-blue);
+        }
+        .btn-contact:hover {
+            background-color: var(--primary-blue);
+            color: var(--bg-dark);
+        }
+        .btn-primary {
+            background-color: var(--primary-blue);
+            color: var(--bg-dark);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(118, 171, 174, 0.3);
+        }
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--text-light);
+            border: 1px solid var(--text-dark);
+        }
+        .btn-secondary:hover {
+            background-color: var(--text-light);
+            color: var(--bg-dark);
+        }
+
+        .hero {
+            background-color: rgba(49, 54, 63, 0.8);
+            padding: 80px 0;
+            border-radius: 20px;
+            margin: 20px;
+            background-image: radial-gradient(var(--text-dark) 0.5px, transparent 0.5px);
+            background-size: 15px 15px;
+        }
+        .hero-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+        }
+        .hero-text {
+            flex: 1;
+        }
+        .hero-text h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin: 0 0 20px 0;
+        }
+        .hero-text h1 .highlight {
+            color: var(--primary-blue);
+        }
+        .hero-text p {
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            max-width: 500px;
+            margin-bottom: 30px;
+        }
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+        }
+        .hero-visual img {
+            max-width: 300px;
+        }
+
+        .features {
+            padding: 100px 0;
+        }
+        .features h2 {
+            text-align: center;
+            font-size: 1rem;
+            color: var(--text-dark);
+            letter-spacing: 2px;
+            margin-bottom: 40px;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        .feature-card {
+            background-color: rgba(49, 54, 63, 0.8);
+            padding: 40px 30px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid var(--bg-card);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .feature-card .icon-wrapper {
+            font-size: 2.5rem;
+            color: var(--primary-blue);
+            margin-bottom: 20px;
+        }
+        .feature-card h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.2rem;
+            color: var(--text-light);
+        }
+        .feature-card p {
+            color: var(--text-dark);
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .main-footer {
+            padding: 40px 0;
+            border-top: 1px solid var(--bg-card);
+        }
+        .main-footer .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-dark);
+        }
+        .social-links {
+            display: flex;
+            gap: 20px;
+        }
+        .social-links a {
+            color: var(--text-dark);
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        }
+        .social-links a:hover {
+            color: var(--primary-blue);
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-<div class="container mt-5">
-  <div class="row">
-    <div class="col-12 text-center">
-      <h1 class="display-1">Welcome to IntruNex</h1>
-      <p class="lead">Your comprehensive vulnerability scanning system.</p>
-    </div>
-  </div>
-</div>
-
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">IntruNex</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_login') }}">Login</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_register') }}">Register</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('about_page') }}">About</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('contact_page') }}">Contact</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('documentation_page') }}">Documentation</a>
-                </li>
-            </ul>
+<div id="react-dark-veil"></div>
+<div class="page-wrapper">
+    <header class="main-header">
+        <div class="container">
+            <nav class="main-nav">
+                <a href="#" class="logo">
+                    <img src="{{ asset('images/logo.jpeg') }}" alt="IntruNex Logo">
+                    <span>IntruNex</span>
+                </a>
+                <ul class="nav-links">
+                    <li><a href="{{ path('about_page') }}">About</a></li>
+                    <li><a href="#">Services</a></li>
+                    <li><a href="#">Pricing</a></li>
+                </ul>
+                <a href="{{ path('contact_page') }}" class="btn btn-contact">Contact</a>
+            </nav>
         </div>
-    </div>
-</nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container hero-content">
+                <div class="hero-text">
+                    <h1>
+                        PROTECT YOUR BUSINESS.
+                        <span class="highlight">SIMPLIFIED SECURITY.</span>
+                    </h1>
+                    <p>Effortless web-driven detection with a clean, intuitive platform.</p>
+                    <div class="hero-buttons">
+                        <a href="{{ path('app_register') }}" class="btn btn-primary">GET STARTED</a>
+                        <a href="{{ path('documentation_page') }}" class="btn btn-secondary">LEARN MORE</a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="container">
+                <h2>FEATURES</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="icon-wrapper">
+                           <i class="fa-solid fa-server"></i>
+                        </div>
+                        <h3>ASSET MANAGEMENT</h3>
+                        <p>Organize and track your digital inventory</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="icon-wrapper">
+                            <i class="fa-solid fa-magnifying-glass-chart"></i>
+                        </div>
+                        <h3>SCAN & PROFILE</h3>
+                        <p>Deep scan, categorize, and discover assets</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="icon-wrapper">
+                            <i class="fa-solid fa-file-shield"></i>
+                        </div>
+                        <h3>VULNERABILITY REPORTS</h3>
+                        <p>Detailed insights and remediation</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container">
+            <p>© {{ "now"|date("Y") }} IntruNex. All rights reserved.</p>
+            <div class="social-links">
+                <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+            </div>
+        </div>
+    </footer>
+</div>
 {% endblock %}
