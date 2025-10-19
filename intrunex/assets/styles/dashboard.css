@@ -5,6 +5,7 @@
     --text-dark: #ADB5BD;
     --accent-blue-light: #76ABAE;
     --accent-blue-dark: #4F7072;
+    --color-primary: #0d6efd; /* Added for primary buttons */
     --color-critical: #E63946;
     --color-high: #F4A261;
     --color-medium: #E9C46A;
@@ -131,7 +132,7 @@
 .add-asset input { width: 100%; padding: 12px; border-radius: 6px; border: 1px solid var(--border-color); background-color: var(--bg-dark); color: var(--text-light); margin-bottom: 15px; }
 .add-asset .button-group { display: flex; gap: 10px; }
 .add-asset .btn { flex-grow: 1; }
-.btn.btn-primary { background: var(--accent-blue-light); color: var(--bg-dark); border: none; }
+.btn.btn-primary { background: var(--accent-blue-light); color: #FFFFFF; border: none; }
 .btn.btn-secondary { background: transparent; color: var(--text-light); border: 1px solid var(--accent-blue-light); }
 
 /* Assets Overview & Vulnerabilities */
