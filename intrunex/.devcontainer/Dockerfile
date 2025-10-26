@@ -1,6 +1,11 @@
 # Base image with PHP 8.2 and Composer preinstalled
 FROM mcr.microsoft.com/devcontainers/php:8.2
 
+# Install pgsql driver
+RUN apt-get update && apt-get install -y libpq-dev \
+    && docker-php-ext-install pdo pdo_pgsql \
+    && rm -rf /var/lib/apt/lists/*
+
 # Install Symfony CLI
 RUN curl -sS https://get.symfony.com/cli/installer | bash \
  && mv ~/.symfony*/bin/symfony /usr/local/bin/symfony
