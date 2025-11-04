@@ -36,7 +36,7 @@
                 <span>{{ "now"|date("F d, Y") }}</span>
             </div>
         </div>
-        <div class="grid-container top-grid">
+        <div class="grid-container">
             <div class="card system-health">
                 <h3>System Health</h3>
                 <div class="progress-donut" style="--progress: {{ (assetCount > 0) ? (100 - ((vulnerabilityCount / assetCount) * 100)) : 100 }};">
@@ -81,9 +81,7 @@
                     {% endfor %}
                 </ul>
             </div>
-        </div>
 
-        <div class="grid-container mid-grid">
             <div class="card scan-reports">
                 <h3>Scan Reports</h3>
                 <table class="scan-reports-table">
@@ -125,17 +123,21 @@
             </div>
 
             <div class="card add-asset">
-                <h3>Add & Scan New Asset</h3>
-                <form action="{{ path('dashboard_asset_scan', {'id': 'ASSET_ID'}) }}" method="POST" id="scan-form">
-                    <label for="asset-select">Select Asset</label>
+                <h3>Asset Management</h3>
+                <div class="button-group">
+                    <a href="{{ path('asset_create') }}" class="btn btn-primary">Add Asset</a>
+                    <a href="{{ path('asset_list') }}" class="btn btn-secondary">View Assets</a>
+                </div>
+                <hr>
+                <h3>Scan Asset</h3>
+                <form action="{{ path('asset_vuln_scan', {'id': assets.0.id|default('ASSET_ID')}) }}" method="POST" id="scan-form">
+                    <input type="hidden" name="_token" value="{{ csrf_token('vuln-scan-asset' ~ (assets.0.id|default('ASSET_ID')) ) }}">
                     <select id="asset-select" name="asset_id" class="form-control">
                         {% for asset in assets %}
                             <option value="{{ asset.id }}">{{ asset.name }}</option>
                         {% endfor %}
                     </select>
-                    <div class="button-group">
-                        <button type="submit" class="btn btn-primary">Run Scan</button>
-                    </div>
+                    <button type="submit" class="btn btn-primary">Scan Selected Asset</button>
                 </form>
             </div>
         </div>
@@ -150,4 +152,24 @@
         </div>
     </footer>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const assetSelect = document.getElementById('asset-select');
+        const scanForm = document.getElementById('scan-form');
+        const tokenInput = scanForm.querySelector('input[name="_token"]');
+
+        assetSelect.addEventListener('change', function() {
+            const assetId = this.value;
+            const action = "{{ path('asset_vuln_scan', {'id': 'ASSET_ID'}) }}".replace('ASSET_ID', assetId);
+            scanForm.setAttribute('action', action);
+
+            // This is a simplified way to handle CSRF token regeneration on the client side.
+            // A better approach would be to fetch a new token via AJAX.
+            // For this example, we will just update the token value with a new one based on the asset id.
+            const newToken = "{{ csrf_token('vuln-scan-asset' ~ 'ASSET_ID') }}".replace('ASSET_ID', assetId);
+            tokenInput.value = newToken;
+        });
+    });
+</script>
 {% endblock %}

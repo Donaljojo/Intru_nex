@@ -75,10 +75,16 @@
     display: grid;
     gap: 25px;
     margin-bottom: 25px;
-    align-items: start; /* Added */
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-auto-rows: min-content;
 }
-.top-grid { grid-template-columns: repeat(3, 1fr); }
-.mid-grid { grid-template-columns: repeat(3, 1fr); }
+
+.system-health { grid-column: 1 / 2; grid-row: 1 / 3; }
+.assets-overview { grid-column: 2 / 3; grid-row: 1 / 2; }
+.scan-reports { grid-column: 2 / 3; grid-row: 2 / 3; }
+.recent-vulnerabilities { grid-column: 3 / 4; grid-row: 1 / 2; }
+.activity-log { grid-column: 3 / 4; grid-row: 2 / 3; }
+.add-asset { grid-column: 3 / 4; grid-row: 3 / 4; }
 
 .card {
     background-color: var(--bg-light-dark);
