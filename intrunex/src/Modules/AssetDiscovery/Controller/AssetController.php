@@ -149,6 +149,7 @@ class AssetController extends AbstractController
         return $this->render('asset_discovery/asset/detail.html.twig', [
             'asset' => $asset,
             'vulnerabilities' => $vulnerabilities,
+            'profilingData' => $asset->getDescription(),
         ]);
     }
 

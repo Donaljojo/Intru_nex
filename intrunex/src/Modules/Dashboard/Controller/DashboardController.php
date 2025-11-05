@@ -26,6 +26,20 @@ class DashboardController extends AbstractController
         // Count assets owned by current user
         $assetCount = $em->getRepository(Asset::class)->count(['user' => $user]);
 
+        // Count active and inactive assets
+        $activeAssetsCount = $em->getRepository(Asset::class)->count(['user' => $user, 'status' => 'Active']);
+        $inactiveAssetsCount = $assetCount - $activeAssetsCount;
+
+        // Count vulnerable and safe assets
+        $qbVulnerableAssets = $em->createQueryBuilder()
+            ->select('COUNT(DISTINCT a.id)')
+            ->from(Asset::class, 'a')
+            ->join('a.vulnerabilities', 'v')
+            ->where('a.user = :user')
+            ->setParameter('user', $user);
+        $vulnerableAssetsCount = (int) $qbVulnerableAssets->getQuery()->getSingleScalarResult();
+        $safeAssetsCount = $assetCount - $vulnerableAssetsCount;
+
         // Count vulnerabilities related to user's assets
         $qbVulnCount = $em->createQueryBuilder()
             ->select('COUNT(v.id)')
@@ -65,6 +79,10 @@ class DashboardController extends AbstractController
         return $this->render('dashboard/index.html.twig', [
             'assetCount' => $assetCount,
             'vulnerabilityCount' => $vulnerabilityCount,
+            'activeAssetsCount' => $activeAssetsCount,
+            'inactiveAssetsCount' => $inactiveAssetsCount,
+            'vulnerableAssetsCount' => $vulnerableAssetsCount,
+            'safeAssetsCount' => $safeAssetsCount,
             'assets' => $assets,
             'scanJobs' => $scanJobs,
             'activity_log' => $activityLog,

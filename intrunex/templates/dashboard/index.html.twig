@@ -101,7 +101,7 @@
                                 <td>{{ scanJob.startedAt|date('m/d/Y') }}</td>
                                 <td>{{ scanJob.asset.name }}</td>
                                 <td>{{ scanJob.status }}</td>
-                                <td><a href="#" class="btn btn-primary btn-sm">View Report</a></td>
+                                <td><a href="{{ path('asset_report', {'id': scanJob.asset.id}) }}" class="btn btn-primary btn-sm">View Report</a></td>
                             </tr>
                         {% else %}
                             <tr>
@@ -122,14 +122,16 @@
                 <a href="#" class="btn btn-secondary">VIEW FULL LOG</a>
             </div>
 
-            <div class="card add-asset">
+            <div class="card asset-management">
                 <h3>Asset Management</h3>
                 <div class="button-group">
                     <a href="{{ path('asset_create') }}" class="btn btn-primary">Add Asset</a>
                     <a href="{{ path('asset_list') }}" class="btn btn-secondary">View Assets</a>
                 </div>
-                <hr>
-                <h3>Scan Asset</h3>
+            </div>
+
+            <div class="card scan-management">
+                <h3>Scan Management</h3>
                 <form action="{{ path('asset_vuln_scan', {'id': assets.0.id|default('ASSET_ID')}) }}" method="POST" id="scan-form">
                     <input type="hidden" name="_token" value="{{ csrf_token('vuln-scan-asset' ~ (assets.0.id|default('ASSET_ID')) ) }}">
                     <select id="asset-select" name="asset_id" class="form-control">

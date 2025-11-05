@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Asset Report - {{ asset.name }}{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <a href="{{ path('dashboard') }}" class="btn btn-secondary mb-3">
+        <i class="bi bi-arrow-left"></i> Back to Dashboard
+    </a>
+
+    <h1>Asset Report: {{ asset.name }}</h1>
+
+    <div class="card mb-3">
+        <div class="card-header">
+            <h2>Asset Details</h2>
+        </div>
+        <div class="card-body">
+            <p><strong>IP Address:</strong> {{ asset.ipAddress ?? 'N/A' }}</p>
+            <p><strong>URL:</strong> {{ asset.url ?? 'N/A' }}</p>
+            <p><strong>Domain:</strong> {{ asset.domain ?? 'N/A' }}</p>
+            <p><strong>Type:</strong> {{ asset.type ?? 'Unknown' }}</p>
+            <p><strong>Status:</strong>
+                {% if asset.status == 'Active' %}
+                    <span class="badge bg-success">Active</span>
+                {% else %}
+                    <span class="badge bg-secondary">Inactive</span>
+                {% endif %}
+            </p>
+            <p><strong>Last Profiled At:</strong>
+                {{ asset.lastProfiledAt ? asset.lastProfiledAt|date('Y-m-d H:i:s') : 'Never' }}
+            </p>
+        </div>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-header">
+            <h2>Profiling Data</h2>
+        </div>
+        <div class="card-body">
+            {% if profilingData %}
+                <pre class="bg-light p-3 border rounded" style="max-height:400px; overflow:auto;">{{ profilingData }}</pre>
+            {% else %}
+                <p>No profiling data available.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-header">
+            <h2>Vulnerability Scan Results</h2>
+        </div>
+        <div class="card-body">
+            {% if vulnerabilities is empty %}
+                <p>No vulnerabilities found for this asset.</p>
+            {% else %}
+                <table class="table table-bordered table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>CVE ID</th>
+                            <th>Description</th>
+                            <th>Severity</th>
+                            <th>Discovered At</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for v in vulnerabilities %}
+                            <tr>
+                                <td>{{ v.cveId }}</td>
+                                <td>{{ v.description|length > 50 ? v.description|slice(0, 50) ~ '...' : v.description }}</td>
+                                <td>
+                                    {% if v.severity == 'High' %}
+                                        <span class="badge bg-danger">{{ v.severity }}</span>
+                                    {% elseif v.severity == 'Medium' %}
+                                        <span class="badge bg-warning text-dark">{{ v.severity }}</span>
+                                    {% else %}
+                                        <span class="badge bg-success">{{ v.severity }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ v.discoveredAt|date('Y-m-d') }}</td>
+                                <td>{{ v.status }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
