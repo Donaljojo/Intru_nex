@@ -33,8 +33,8 @@ class DashboardController extends AbstractController
         // Count vulnerable and safe assets
         $qbVulnerableAssets = $em->createQueryBuilder()
             ->select('COUNT(DISTINCT a.id)')
-            ->from(Asset::class, 'a')
-            ->join('a.vulnerabilities', 'v')
+            ->from(Vulnerability::class, 'v')
+            ->join('v.asset', 'a')
             ->where('a.user = :user')
             ->setParameter('user', $user);
         $vulnerableAssetsCount = (int) $qbVulnerableAssets->getQuery()->getSingleScalarResult();

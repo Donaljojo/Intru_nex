@@ -227,6 +227,3 @@ public function setUserAssetNumber(?int $num): self
         return $this;
     }
 }
-
-
-
