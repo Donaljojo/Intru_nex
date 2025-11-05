@@ -122,10 +122,13 @@
 .progress-text .percentage { font-size: 2.5rem; font-weight: 700; color: var(--text-light); }
 .progress-text .label { display: block; font-size: 1rem; color: var(--text-dark); }
 .health-stats { list-style: none; padding: 0; margin: 0; text-align: left; }
-.health-stats li { margin-bottom: 8px; color: var(--text-dark); }
+.health-stats li { margin-bottom: 15px; color: var(--text-dark); display: flex; justify-content: space-between; align-items: center; }
 .health-stats .dot { height: 10px; width: 10px; border-radius: 50%; display: inline-block; margin-right: 10px;}
 .dot.green { background-color: var(--color-green); }
 .dot.gray { background-color: #6c757d; }
+.dot.blue { background-color: #007bff; }
+.dot.yellow { background-color: #ffc107; }
+.dot.red { background-color: var(--color-critical); }
 
 /* Activity Log Card */
 .activity-log { background-color: var(--accent-blue-dark); }

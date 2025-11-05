@@ -30,6 +30,10 @@ class DashboardController extends AbstractController
         $activeAssetsCount = $em->getRepository(Asset::class)->count(['user' => $user, 'status' => 'Active']);
         $inactiveAssetsCount = $assetCount - $activeAssetsCount;
 
+        // Count monitored and unmonitored assets
+        $monitoredAssetsCount = $em->getRepository(Asset::class)->count(['user' => $user, 'isMonitored' => true]);
+        $unmonitoredAssetsCount = $assetCount - $monitoredAssetsCount;
+
         // Count vulnerable and safe assets
         $qbVulnerableAssets = $em->createQueryBuilder()
             ->select('COUNT(DISTINCT a.id)')
@@ -83,6 +87,8 @@ class DashboardController extends AbstractController
             'inactiveAssetsCount' => $inactiveAssetsCount,
             'vulnerableAssetsCount' => $vulnerableAssetsCount,
             'safeAssetsCount' => $safeAssetsCount,
+            'monitoredAssetsCount' => $monitoredAssetsCount,
+            'unmonitoredAssetsCount' => $unmonitoredAssetsCount,
             'assets' => $assets,
             'scanJobs' => $scanJobs,
             'activity_log' => $activityLog,

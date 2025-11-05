@@ -59,6 +59,9 @@ public function setUserAssetNumber(?int $num): self
     #[ORM\Column(type: "text", nullable: true)]
     private ?string $description = null;
 
+    #[ORM\Column(type: "boolean")]
+    private bool $isMonitored = true;
+
     // 🔹 Phase 1 Profiling fields
     #[ORM\Column(type: "string", length: 255, nullable: true)]
     private ?string $operatingSystem = null;
@@ -169,6 +172,17 @@ public function setUserAssetNumber(?int $num): self
     public function setDescription(?string $description): self
     {
         $this->description = $description;
+        return $this;
+    }
+
+    public function isMonitored(): bool
+    {
+        return $this->isMonitored;
+    }
+
+    public function setIsMonitored(bool $isMonitored): self
+    {
+        $this->isMonitored = $isMonitored;
         return $this;
     }
 

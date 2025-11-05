@@ -39,15 +39,37 @@
         <div class="grid-container">
             <div class="card system-health">
                 <h3>System Health</h3>
-                <div class="progress-donut" style="--progress: {{ (assetCount > 0) ? (100 - ((vulnerabilityCount / assetCount) * 100)) : 100 }};">
+                <div class="progress-donut" style="--progress: {{ (assetCount > 0) ? ((safeAssetsCount / assetCount) * 100) : 100 }};">
                     <div class="progress-text">
-                        <span class="percentage">{{ (assetCount > 0) ? (100 - ((vulnerabilityCount / assetCount) * 100))|round : 100 }}%</span>
+                        <span class="percentage">{{ (assetCount > 0) ? ((safeAssetsCount / assetCount) * 100)|round : 100 }}%</span>
                         <span class="label">Secure</span>
                     </div>
                 </div>
                 <ul class="health-stats">
-                    <li><span class="dot green"></span> Total Assets: {{ assetCount }}</li>
-                    <li><span class="dot gray"></span> Vulnerabilities Detected: {{ vulnerabilityCount }}</li>
+                    <li>
+                        <div><span class="dot green"></span> Active Assets</div>
+                        <span>{{ activeAssetsCount }}</span>
+                    </li>
+                    <li>
+                        <div><span class="dot gray"></span> Inactive Assets</div>
+                        <span>{{ inactiveAssetsCount }}</span>
+                    </li>
+                    <li>
+                        <div><span class="dot blue"></span> Monitored Assets</div>
+                        <span>{{ monitoredAssetsCount }}</span>
+                    </li>
+                    <li>
+                        <div><span class="dot yellow"></span> Unmonitored Assets</div>
+                        <span>{{ unmonitoredAssetsCount }}</span>
+                    </li>
+                    <li>
+                        <div><span class="dot red"></span> Vulnerable Assets</div>
+                        <span>{{ vulnerableAssetsCount }}</span>
+                    </li>
+                    <li>
+                        <div><span class="dot green"></span> Safe Assets</div>
+                        <span>{{ safeAssetsCount }}</span>
+                    </li>
                 </ul>
             </div>
 
