@@ -45,32 +45,44 @@
                         <span class="label">Secure</span>
                     </div>
                 </div>
-                <ul class="health-stats">
-                    <li>
-                        <div><span class="dot green"></span> Active Assets</div>
-                        <span>{{ activeAssetsCount }}</span>
-                    </li>
-                    <li>
-                        <div><span class="dot gray"></span> Inactive Assets</div>
-                        <span>{{ inactiveAssetsCount }}</span>
-                    </li>
-                    <li>
-                        <div><span class="dot blue"></span> Monitored Assets</div>
-                        <span>{{ monitoredAssetsCount }}</span>
-                    </li>
-                    <li>
-                        <div><span class="dot yellow"></span> Unmonitored Assets</div>
-                        <span>{{ unmonitoredAssetsCount }}</span>
-                    </li>
-                    <li>
-                        <div><span class="dot red"></span> Vulnerable Assets</div>
-                        <span>{{ vulnerableAssetsCount }}</span>
-                    </li>
-                    <li>
-                        <div><span class="dot green"></span> Safe Assets</div>
-                        <span>{{ safeAssetsCount }}</span>
-                    </li>
-                </ul>
+                <div class="health-stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-title">
+                            <span class="dot green"></span> Active Assets
+                        </div>
+                        <div class="stat-value">{{ activeAssetsCount }}</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-title">
+                            <span class="dot gray"></span> Inactive Assets
+                        </div>
+                        <div class="stat-value">{{ inactiveAssetsCount }}</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-title">
+                            <span class="dot blue"></span> Monitored Assets
+                        </div>
+                        <div class="stat-value">{{ monitoredAssetsCount }}</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-title">
+                            <span class="dot yellow"></span> Unmonitored Assets
+                        </div>
+                        <div class="stat-value">{{ unmonitoredAssetsCount }}</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-title">
+                            <span class="dot red"></span> Vulnerable Assets
+                        </div>
+                        <div class="stat-value">{{ vulnerableAssetsCount }}</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-title">
+                            <span class="dot green"></span> Safe Assets
+                        </div>
+                        <div class="stat-value">{{ safeAssetsCount }}</div>
+                    </div>
+                </div>
             </div>
 
             <div class="card assets-overview">
