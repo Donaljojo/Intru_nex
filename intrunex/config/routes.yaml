@@ -67,11 +67,5 @@ reporting:
     type: attribute
     prefix: /report
 
-# Audit Logging module
-audit_logging:
-    resource: '../src/Modules/AuditLogging/Controller'
-    type: attribute
-    prefix: /
-
 
 
