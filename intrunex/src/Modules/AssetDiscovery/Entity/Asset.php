@@ -207,13 +207,17 @@ public function setUserAssetNumber(?int $num): self
 
     public function setOpenPorts(?array $openPorts): self
     {
-    // Ensure all ports are stored as strings
         if ($openPorts !== null) {
-        $openPorts = array_map(fn($p) => (string) $p, $openPorts);
-    }
+            $openPorts = array_map(function($p) {
+                if (is_array($p)) {
+                    return implode(' ', array_map(fn($item) => (string)$item, $p));
+                }
+                return (string) $p;
+            }, $openPorts);
+        }
 
-    $this->openPorts = $openPorts;
-    return $this;
+        $this->openPorts = $openPorts;
+        return $this;
     }
 
     public function getLastProfiledAt(): ?\DateTimeImmutable
@@ -239,5 +243,14 @@ public function setUserAssetNumber(?int $num): self
     {
         $this->lastVulnerabilityScanAt = $lastVulnerabilityScanAt;
         return $this;
+    }
+
+    public function getProfilingData(): array
+    {
+        return [
+            'operatingSystem' => $this->getOperatingSystem(),
+            'openPorts' => $this->getOpenPorts(),
+            'lastProfiledAt' => $this->getLastProfiledAt(),
+        ];
     }
 }

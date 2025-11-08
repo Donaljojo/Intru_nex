@@ -89,7 +89,22 @@
                 </div>
                 <div class="card-body">
                     {% if profilingData %}
-                        <pre class="bg-light p-3 border rounded" style="max-height:400px; overflow:auto;">{{ profilingData }}</pre>
+                        <dl class="row">
+                            <dt class="col-sm-3">Operating System</dt>
+                            <dd class="col-sm-9">{{ profilingData.operatingSystem ?? 'N/A' }}</dd>
+
+                            <dt class="col-sm-3">Open Ports</dt>
+                            <dd class="col-sm-9">
+                                {% if profilingData.openPorts is not empty %}
+                                    {{ profilingData.openPorts|join(', ') }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </dd>
+
+                            <dt class="col-sm-3">Last Profiled At</dt>
+                            <dd class="col-sm-9">{{ profilingData.lastProfiledAt ? profilingData.lastProfiledAt|date('Y-m-d H:i:s') : 'Never' }}</dd>
+                        </dl>
                     {% else %}
                         <p>No profiling data available.</p>
                     {% endif %}
