@@ -2,6 +2,7 @@
 
 namespace App\Security;
 
+use App\Modules\AuditLogging\Service\ActivityLogger;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,8 +23,13 @@ class AppCustomAuthenticator extends AbstractLoginFormAuthenticator
 
     public const LOGIN_ROUTE = 'app_login';
 
-    public function __construct(private UrlGeneratorInterface $urlGenerator)
+    private ActivityLogger $activityLogger;
+    private UrlGeneratorInterface $urlGenerator;
+
+    public function __construct(ActivityLogger $activityLogger, UrlGeneratorInterface $urlGenerator)
     {
+        $this->activityLogger = $activityLogger;
+        $this->urlGenerator = $urlGenerator;
     }
 
     public function authenticate(Request $request): Passport
@@ -44,6 +50,7 @@ class AppCustomAuthenticator extends AbstractLoginFormAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
+        $this->activityLogger->log('User logged in successfully.');
         // Redirect to originally requested page if exists, else to dashboard
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
