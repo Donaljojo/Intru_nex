@@ -32,7 +32,6 @@ class ReportController extends AbstractController
             'scanJobs' => $scanJobs,
         ]);
     }
-
     #[Route('/reports/asset/{id}', name: 'asset_report')]
     public function assetReport(Asset $asset, EntityManagerInterface $em): Response
     {
@@ -44,10 +43,12 @@ class ReportController extends AbstractController
         }
 
         $vulnerabilities = $em->getRepository(Vulnerability::class)->findBy(['asset' => $asset]);
+        $profilingData = $asset->getProfilingData();
 
         return $this->render('reporting/asset_report.html.twig', [
             'asset' => $asset,
             'vulnerabilities' => $vulnerabilities,
+            'profilingData' => $profilingData,
         ]);
     }
 }

@@ -5,33 +5,51 @@
 {% block stylesheets %}
     {{ parent() }}
     <style>
-        .report-table {
-            width: 100%;
-            border-collapse: collapse;
+        .reports-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
             margin-top: 20px;
         }
-        .report-table th, .report-table td {
-            border: 1px solid #ddd;
-            padding: 8px;
+        .report-card {
+            background-color: #2d3748;
+            border: 1px solid #4a5568;
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s;
         }
-        .report-table th {
-            background-color: #f2f2f2;
-            text-align: left;
+        .report-card:hover {
+            transform: translateY(-5px);
         }
-        .report-table tr:nth-child(even) {
-            background-color: #f9f9f9;
+        .report-card-header {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #e2e8f0;
         }
-        .report-table tr:hover {
-            background-color: #f1f1f1;
+        .report-card-body {
+            margin-top: 15px;
+            color: #a0aec0;
+        }
+        .report-card-footer {
+            margin-top: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .status-icon {
+            font-size: 1.5rem;
         }
         .status-completed {
-            color: green;
+            color: #38a169; /* green */
         }
         .status-pending {
-            color: orange;
+            color: #dd6b20; /* orange */
         }
         .status-failed {
-            color: red;
+            color: #e53e3e; /* red */
         }
     </style>
 {% endblock %}
@@ -63,32 +81,35 @@
         </div>
         <div class="card">
             <h3>All Scan Reports</h3>
-            <table class="report-table">
-                <thead>
-                    <tr>
-                        <th>Report ID</th>
-                        <th>Date</th>
-                        <th>Asset</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for scanJob in scanJobs %}
-                        <tr>
-                            <td>{{ scanJob.id }}</td>
-                            <td>{{ scanJob.startedAt|date('m/d/Y H:i') }}</td>
-                            <td>{{ scanJob.asset.name }}</td>
-                            <td class="status-{{ scanJob.status|lower }}">{{ scanJob.status }}</td>
-                            <td><a href="{{ path('asset_report', {'id': scanJob.asset.id}) }}" class="btn btn-primary btn-sm">View Report</a></td>
-                        </tr>
-                    {% else %}
-                        <tr>
-                            <td colspan="5">No scan reports found.</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <div class="reports-grid">
+                {% for scanJob in scanJobs %}
+                    <div class="report-card">
+                        <div class="report-card-header">
+                            {{ scanJob.asset.name }}
+                        </div>
+                        <div class="report-card-body">
+                            <p><strong>Scan Date:</strong> {{ scanJob.startedAt|date('m/d/Y H:i') }}</p>
+                            <p><strong>Status:</strong> {{ scanJob.status }}</p>
+                        </div>
+                        <div class="report-card-footer">
+                            <a href="{{ path('asset_report', {'id': scanJob.asset.id}) }}" class="btn btn-primary btn-sm">View Report</a>
+                            <span class="status-icon status-{{ scanJob.status|lower }}">
+                                {% if scanJob.status|lower == 'completed' %}
+                                    <i class="bi bi-check-circle-fill"></i>
+                                {% elseif scanJob.status|lower == 'pending' %}
+                                    <i class="bi bi-clock-fill"></i>
+                                {% elseif scanJob.status|lower == 'failed' %}
+                                    <i class="bi bi-x-circle-fill"></i>
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="col">
+                        <p>No scan reports found.</p>
+                    </div>
+                {% endfor %}
+            </div>
         </div>
     </main>
 

@@ -198,7 +198,7 @@
 .expand-icon { margin-left: auto; font-size: 1.5rem; color: var(--text-dark); }
 
 /* Scan Reports Table */
-.scan-reports-table { width: 100%; border-collapse: collapse; }
+.scan-reports-table { width: 100%; border-collapse: collapse; background-color: black;}
 .scan-reports-table th, .scan-reports-table td {
     padding: 15px;
     text-align: left;

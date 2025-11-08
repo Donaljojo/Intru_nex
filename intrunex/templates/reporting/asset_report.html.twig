@@ -2,89 +2,153 @@
 
 {% block title %}Asset Report - {{ asset.name }}{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .card {
+            background-color: #2d3748;
+            border: 1px solid #4a5568;
+            color: #e2e8f0;
+        }
+        .card-header {
+            background-color: #1a202c;
+            border-bottom: 1px solid #4a5568;
+        }
+        .table {
+            color: #e2e8f0;
+        }
+        .table-hover tbody tr:hover {
+            color: #e2e8f0;
+            background-color: #4a5568;
+        }
+        .bg-light {
+            background-color: #1a202c !important;
+        }
+        .border {
+            border-color: #4a5568 !important;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
-<div class="container mt-4">
-    <a href="{{ path('dashboard') }}" class="btn btn-secondary mb-3">
-        <i class="bi bi-arrow-left"></i> Back to Dashboard
-    </a>
+<div class="dashboard-wrapper">
+    <header class="dashboard-header">
+        <div class="logo">
+            <img src="{{ asset('images/logo.png') }}" alt="IntruNex Logo">
+            <span>IntruNex <strong>Dashboard</strong></span>
+        </div>
+        <nav class="dashboard-nav">
+            <a href="{{ path('dashboard') }}">Overview</a>
+            <a href="{{ path('report_index') }}" class="active">Reports</a>
+            <a href="#">Analytics</a>
+            <a href="#">Settings</a>
+        </nav>
+        <div class="user-profile">
+            <i class="fas fa-user-circle"></i>
+        </div>
+    </header>
 
-    <h1>Asset Report: {{ asset.name }}</h1>
+    <main class="main-content">
+        <div class="header-info">
+            <div class="breadcrumbs">
+                Dashboard / Reports / {{ asset.name }}
+                <span>{{ "now"|date("F d, Y") }}</span>
+            </div>
+        </div>
 
-    <div class="card mb-3">
-        <div class="card-header">
-            <h2>Asset Details</h2>
-        </div>
-        <div class="card-body">
-            <p><strong>IP Address:</strong> {{ asset.ipAddress ?? 'N/A' }}</p>
-            <p><strong>URL:</strong> {{ asset.url ?? 'N/A' }}</p>
-            <p><strong>Domain:</strong> {{ asset.domain ?? 'N/A' }}</p>
-            <p><strong>Type:</strong> {{ asset.type ?? 'Unknown' }}</p>
-            <p><strong>Status:</strong>
-                {% if asset.status == 'Active' %}
-                    <span class="badge bg-success">Active</span>
-                {% else %}
-                    <span class="badge bg-secondary">Inactive</span>
-                {% endif %}
-            </p>
-            <p><strong>Last Profiled At:</strong>
-                {{ asset.lastProfiledAt ? asset.lastProfiledAt|date('Y-m-d H:i:s') : 'Never' }}
-            </p>
-        </div>
-    </div>
+        <div class="container-fluid">
+            <a href="{{ path('report_index') }}" class="btn btn-secondary mb-3">
+                <i class="bi bi-arrow-left"></i> Back to Reports
+            </a>
 
-    <div class="card mb-3">
-        <div class="card-header">
-            <h2>Profiling Data</h2>
-        </div>
-        <div class="card-body">
-            {% if profilingData %}
-                <pre class="bg-light p-3 border rounded" style="max-height:400px; overflow:auto;">{{ profilingData }}</pre>
-            {% else %}
-                <p>No profiling data available.</p>
-            {% endif %}
-        </div>
-    </div>
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h2>Asset Details</h2>
+                </div>
+                <div class="card-body">
+                    <p><strong>IP Address:</strong> {{ asset.ipAddress ?? 'N/A' }}</p>
+                    <p><strong>URL:</strong> {{ asset.url ?? 'N/A' }}</p>
+                    <p><strong>Domain:</strong> {{ asset.domain ?? 'N/A' }}</p>
+                    <p><strong>Type:</strong> {{ asset.type ?? 'Unknown' }}</p>
+                    <p><strong>Status:</strong>
+                        {% if asset.status == 'Active' %}
+                            <span class="badge bg-success">Active</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Inactive</span>
+                        {% endif %}
+                    </p>
+                    <p><strong>Last Profiled At:</strong>
+                        {{ asset.lastProfiledAt ? asset.lastProfiledAt|date('Y-m-d H:i:s') : 'Never' }}
+                    </p>
+                </div>
+            </div>
 
-    <div class="card mb-3">
-        <div class="card-header">
-            <h2>Vulnerability Scan Results</h2>
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h2>Profiling Data</h2>
+                </div>
+                <div class="card-body">
+                    {% if profilingData %}
+                        <pre class="bg-light p-3 border rounded" style="max-height:400px; overflow:auto;">{{ profilingData }}</pre>
+                    {% else %}
+                        <p>No profiling data available.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h2>Vulnerability Scan Results</h2>
+                </div>
+                <div class="card-body">
+                    {% if vulnerabilities is empty %}
+                        <p>No vulnerabilities found for this asset.</p>
+                    {% else %}
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>CVE ID</th>
+                                        <th>Description</th>
+                                        <th>Severity</th>
+                                        <th>Discovered At</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for v in vulnerabilities %}
+                                        <tr>
+                                            <td>{{ v.cveId }}</td>
+                                            <td>{{ v.description|length > 50 ? v.description|slice(0, 50) ~ '...' : v.description }}</td>
+                                            <td>
+                                                {% if v.severity == 'High' %}
+                                                    <span class="badge bg-danger">{{ v.severity }}</span>
+                                                {% elseif v.severity == 'Medium' %}
+                                                    <span class="badge bg-warning text-dark">{{ v.severity }}</span>
+                                                {% else %}
+                                                    <span class="badge bg-success">{{ v.severity }}</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ v.discoveredAt|date('Y-m-d') }}</td>
+                                            <td>{{ v.status }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
         </div>
-        <div class="card-body">
-            {% if vulnerabilities is empty %}
-                <p>No vulnerabilities found for this asset.</p>
-            {% else %}
-                <table class="table table-bordered table-hover align-middle">
-                    <thead>
-                        <tr>
-                            <th>CVE ID</th>
-                            <th>Description</th>
-                            <th>Severity</th>
-                            <th>Discovered At</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for v in vulnerabilities %}
-                            <tr>
-                                <td>{{ v.cveId }}</td>
-                                <td>{{ v.description|length > 50 ? v.description|slice(0, 50) ~ '...' : v.description }}</td>
-                                <td>
-                                    {% if v.severity == 'High' %}
-                                        <span class="badge bg-danger">{{ v.severity }}</span>
-                                    {% elseif v.severity == 'Medium' %}
-                                        <span class="badge bg-warning text-dark">{{ v.severity }}</span>
-                                    {% else %}
-                                        <span class="badge bg-success">{{ v.severity }}</span>
-                                    {% endif %}
-                                </td>
-                                <td>{{ v.discoveredAt|date('Y-m-d') }}</td>
-                                <td>{{ v.status }}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            {% endif %}
+    </main>
+
+    <footer class="dashboard-footer">
+        <p>© {{ "now"|date("Y") }} IntruNex. All rights reserved.</p>
+        <div class="social-links">
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
         </div>
-    </div>
+    </footer>
 </div>
 {% endblock %}
