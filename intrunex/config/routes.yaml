@@ -67,5 +67,19 @@ reporting:
     type: attribute
     prefix: /report
 
+# Settings module
+settings:
+    resource: '../src/Modules/Settings/Controller'
+    type: attribute
+    prefix: /
+
+# Analytics module
+analytics:
+    resource: '../src/Modules/Analytics/Controller'
+    type: attribute
+    prefix: /
+
+
+
 
 

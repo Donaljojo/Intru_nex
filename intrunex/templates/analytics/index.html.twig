@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Analytics{% endblock %}
+
+{% block body %}
+<div class="dashboard-wrapper">
+    <header class="dashboard-header">
+        <div class="logo">
+            <img src="{{ asset('images/logo.png') }}" alt="IntruNex Logo">
+            <span>IntruNex <strong>Analytics</strong></span>
+        </div>
+        <nav class="dashboard-nav">
+            <a href="{{ path('dashboard') }}">Overview</a>
+            <a href="{{ path('report_index') }}">Reports</a>
+            <a href="{{ path('analytics') }}" class="active">Analytics</a>
+            <a href="{{ path('settings') }}">Settings</a>
+        </nav>
+        <div class="user-profile">
+            <i class="fas fa-user-circle"></i>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="header-info">
+            <div class="breadcrumbs">
+                Dashboard / Analytics
+                <span>{{ "now"|date("F d, Y") }}</span>
+            </div>
+        </div>
+        <h1>Analytics Page</h1>
+        <p>This is the analytics page. Content will be added here soon.</p>
+    </main>
+
+    <footer class="dashboard-footer">
+        <p>© {{ "now"|date("Y") }} IntruNex. All rights reserved.</p>
+        <div class="social-links">
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+    </footer>
+</div>
+{% endblock %}

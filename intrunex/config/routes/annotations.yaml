@@ -24,3 +24,7 @@ audit_logging_controllers:
 reporting_controllers:
     resource: ../../src/Modules/Reporting/Controller/
     type: annotation
+
+analytics_controllers:
+    resource: ../../src/Modules/Analytics/Controller/
+    type: annotation
