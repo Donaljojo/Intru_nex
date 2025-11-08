@@ -1,0 +1,104 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Scan Reports{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .report-table th, .report-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        .report-table th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+        .report-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .report-table tr:hover {
+            background-color: #f1f1f1;
+        }
+        .status-completed {
+            color: green;
+        }
+        .status-pending {
+            color: orange;
+        }
+        .status-failed {
+            color: red;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="dashboard-wrapper">
+    <header class="dashboard-header">
+        <div class="logo">
+            <img src="{{ asset('images/logo.png') }}" alt="IntruNex Logo">
+            <span>IntruNex <strong>Dashboard</strong></span>
+        </div>
+        <nav class="dashboard-nav">
+            <a href="{{ path('dashboard') }}">Overview</a>
+            <a href="{{ path('report_index') }}" class="active">Reports</a>
+            <a href="#">Analytics</a>
+            <a href="#">Settings</a>
+        </nav>
+        <div class="user-profile">
+            <i class="fas fa-user-circle"></i>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="header-info">
+            <div class="breadcrumbs">
+                Dashboard / Reports
+                <span>{{ "now"|date("F d, Y") }}</span>
+            </div>
+        </div>
+        <div class="card">
+            <h3>All Scan Reports</h3>
+            <table class="report-table">
+                <thead>
+                    <tr>
+                        <th>Report ID</th>
+                        <th>Date</th>
+                        <th>Asset</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for scanJob in scanJobs %}
+                        <tr>
+                            <td>{{ scanJob.id }}</td>
+                            <td>{{ scanJob.startedAt|date('m/d/Y H:i') }}</td>
+                            <td>{{ scanJob.asset.name }}</td>
+                            <td class="status-{{ scanJob.status|lower }}">{{ scanJob.status }}</td>
+                            <td><a href="{{ path('asset_report', {'id': scanJob.asset.id}) }}" class="btn btn-primary btn-sm">View Report</a></td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="5">No scan reports found.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <footer class="dashboard-footer">
+        <p>© {{ "now"|date("Y") }} IntruNex. All rights reserved.</p>
+        <div class="social-links">
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+    </footer>
+</div>
+{% endblock %}

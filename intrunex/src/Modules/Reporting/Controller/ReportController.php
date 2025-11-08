@@ -3,31 +3,51 @@
 namespace App\Modules\Reporting\Controller;
 
 use App\Modules\AssetDiscovery\Entity\Asset;
-use App\Modules\Reporting\Service\ReportService;
+use App\Modules\AssetVulnerability\Entity\Vulnerability;
+use App\Modules\ScanManagement\Entity\ScanJob;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/report')]
+#[IsGranted('ROLE_USER')]
 class ReportController extends AbstractController
 {
-    private ReportService $reportService;
-
-    public function __construct(ReportService $reportService)
+    #[Route('/reports', name: 'report_index')]
+    public function index(EntityManagerInterface $em): Response
     {
-        $this->reportService = $reportService;
+        $user = $this->getUser();
+
+        $qbScanJobs = $em->createQueryBuilder()
+            ->select('sj')
+            ->from(ScanJob::class, 'sj')
+            ->join('sj.asset', 'a')
+            ->where('a.user = :user')
+            ->setParameter('user', $user)
+            ->orderBy('sj.startedAt', 'DESC');
+        $scanJobs = $qbScanJobs->getQuery()->getResult();
+
+        return $this->render('reporting/index.html.twig', [
+            'scanJobs' => $scanJobs,
+        ]);
     }
 
-    #[Route('/asset/{id}', name: 'asset_report', methods: ['GET'])]
-    public function assetReport(Asset $asset): Response
+    #[Route('/reports/asset/{id}', name: 'asset_report')]
+    public function assetReport(Asset $asset, EntityManagerInterface $em): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_USER');
-        if ($asset->getUser() !== $this->getUser()) {
-            throw $this->createAccessDeniedException();
+        $user = $this->getUser();
+
+        if ($asset->getUser() !== $user) {
+            $this->addFlash('error', 'You are not authorized to view this report.');
+            return $this->redirectToRoute('report_index');
         }
 
-        $reportData = $this->reportService->generateAssetReport($asset);
+        $vulnerabilities = $em->getRepository(Vulnerability::class)->findBy(['asset' => $asset]);
 
-        return $this->render('reporting/asset_report.html.twig', $reportData);
+        return $this->render('reporting/asset_report.html.twig', [
+            'asset' => $asset,
+            'vulnerabilities' => $vulnerabilities,
+        ]);
     }
 }
