@@ -37,53 +37,7 @@
             </div>
         </div>
         <div class="grid-container">
-            <div class="card system-health">
-                <h3>System Health</h3>
-                <div class="progress-donut" style="--progress: {{ (assetCount > 0) ? ((safeAssetsCount / assetCount) * 100) : 100 }};">
-                    <div class="progress-text">
-                        <span class="percentage">{{ (assetCount > 0) ? ((safeAssetsCount / assetCount) * 100)|round : 100 }}%</span>
-                        <span class="label">Secure</span>
-                    </div>
-                </div>
-                <div class="health-stats-grid">
-                    <div class="stat-box">
-                        <div class="stat-title">
-                            <span class="dot green"></span> Active Assets
-                        </div>
-                        <div class="stat-value">{{ activeAssetsCount }}</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-title">
-                            <span class="dot gray"></span> Inactive Assets
-                        </div>
-                        <div class="stat-value">{{ inactiveAssetsCount }}</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-title">
-                            <span class="dot blue"></span> Monitored Assets
-                        </div>
-                        <div class="stat-value">{{ monitoredAssetsCount }}</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-title">
-                            <span class="dot yellow"></span> Unmonitored Assets
-                        </div>
-                        <div class="stat-value">{{ unmonitoredAssetsCount }}</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-title">
-                            <span class="dot red"></span> Vulnerable Assets
-                        </div>
-                        <div class="stat-value">{{ vulnerableAssetsCount }}</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-title">
-                            <span class="dot green"></span> Safe Assets
-                        </div>
-                        <div class="stat-value">{{ safeAssetsCount }}</div>
-                    </div>
-                </div>
-            </div>
+
 
             <div class="card assets-overview">
                 <h3>Assets Overview</h3>
