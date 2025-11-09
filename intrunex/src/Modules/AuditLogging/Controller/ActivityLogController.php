@@ -14,7 +14,7 @@ class ActivityLogController extends AbstractController
     #[Route('/audit/log', name: 'audit_log_index')]
     public function index(ActivityLogRepository $activityLogRepository): Response
     {
-        $logs = $activityLogRepository->findBy([], ['createdAt' => 'DESC']);
+        $logs = $activityLogRepository->findByUser($this->getUser());
 
         return $this->render('Modules/AuditLogging/index.html.twig', [
             'logs' => $logs,

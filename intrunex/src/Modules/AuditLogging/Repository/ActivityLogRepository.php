@@ -39,6 +39,17 @@ class ActivityLogRepository extends ServiceEntityRepository
         }
     }
 
+    public function findByUser($user): array
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.user = :user')
+            ->setParameter('user', $user)
+            ->orderBy('a.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
 //    /**
 //     * @return ActivityLog[] Returns an array of ActivityLog objects
 //     */
