@@ -81,7 +81,7 @@
 
 .system-health { grid-column: 1 / 2; grid-row: 1 / 3; }
 .assets-overview { grid-column: 2 / 3; grid-row: 1 / 2; }
-.scan-reports { grid-column: 2 / 3; grid-row: 2 / 3; }
+.scan-reports { grid-column: 2 / 3; grid-row: 2 / 3; height: 300px; overflow-y: auto; }
 .recent-vulnerabilities { grid-column: 3 / 4; grid-row: 1 / 2; }
 .activity-log { grid-column: 3 / 4; grid-row: 2 / 3; }
 .add-asset { grid-column: 3 / 4; grid-row: 3 / 4; }
