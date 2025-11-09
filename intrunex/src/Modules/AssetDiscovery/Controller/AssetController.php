@@ -180,7 +180,7 @@ class AssetController extends AbstractController
 
         if ($this->isCsrfTokenValid('vuln-scan-asset'.$asset->getId(), $request->request->get('_token'))) {
             try {
-                $scanJob = $vulnerabilityScanService->scanAsset($asset);
+                $scanJob = $vulnerabilityScanService->scanAsset($asset, 'default');
                 $this->addFlash('success', 'Vulnerability scan started for asset: ' . $asset->getName());
                 return $this->redirectToRoute('vulnerability_scan_progress', ['id' => $scanJob->getId()]);
             } catch (\Exception $e) {

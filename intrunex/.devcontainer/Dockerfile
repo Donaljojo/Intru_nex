@@ -15,6 +15,10 @@ RUN apt-get update && apt-get install -y \
     unzip \
     nmap \
     nikto \
+    wapiti \
+    arachni \
+    whatweb \
+    && docker-php-ext-install xml \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Nuclei (latest)
